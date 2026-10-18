@@ -1,0 +1,14 @@
+# The quay engine as one service: build the image, run the jar, and keep
+# the operational knobs in one place. The token is optional; when it is set
+# the workbench asks for it on the first refusal.
+services:
+  quay:
+    build: .
+    image: quay-engine
+    ports:
+      - "8091:8091"
+    environment:
+      QUAY_TOKEN: ${QUAY_TOKEN:-}
+      QUAY_RATE_LIMIT: ${QUAY_RATE_LIMIT:-600}
+      QUAY_MAX_BODY: ${QUAY_MAX_BODY:-1048576}
+    restart: unless-stopped
