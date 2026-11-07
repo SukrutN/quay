@@ -1,0 +1,446 @@
+openapi: 3.0.3
+info:
+  title: Quay slotting
+  version: 1.0.0
+  description: |
+    Slots one forward pick face. Send a published fixture name or an inline face document.
+    The service does not keep a warehouse, an order stream, or a user directory.
+paths:
+  /health:
+    get:
+      operationId: health
+      responses:
+        "200":
+          description: The process is serving.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    example: up
+  /ready:
+    get:
+      operationId: readiness
+      responses:
+        "200":
+          description: The fixture libraries are loaded and the engine will answer.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, faces, days]
+                properties:
+                  status:
+                    type: string
+                    example: ready
+                  faces:
+                    type: integer
+                  days:
+                    type: integer
+        "503":
+          description: A fixture library is empty, so the engine is not ready to serve.
+  /metrics:
+    get:
+      operationId: metrics
+      responses:
+        "200":
+          description: The process's counters and gauges, in Prometheus text exposition format. The route stays open for the scraper.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /v1/openapi.yaml:
+    get:
+      operationId: openApi
+      responses:
+        "200":
+          description: This document.
+          content:
+            application/yaml:
+              schema:
+                type: string
+  /v1/slotting:
+    post:
+      operationId: slotFace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/FixtureRequest"
+                - $ref: "#/components/schemas/InlineRequest"
+      responses:
+        "200":
+          description: A proposal, and the current layout when the document included one.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlottingReport"
+        "400":
+          description: The fixture is unknown or the face cannot be slotted.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /v1/import/skus:
+    post:
+      operationId: importSkus
+      description: |
+        Splices a SKU-master CSV into a face or a putaway-day document. The
+        CSV needs columns id, name, picksPerDay, cubeLiters, and weightKg,
+        with optional zone or case columns; the case column populates a day's
+        unit-of-master and is refused on a face. Rows the importer refuses
+        ride in the report with their line numbers and reasons, and every
+        reference the new master orphans (affinities, unit-of-master,
+        receipts, on-hand, openings, start states, assignments) is pruned
+        with the count carried in the report. The returned document is the
+        one the run endpoints accept.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fixture:
+                  type: string
+                face:
+                  type: object
+                day:
+                  type: object
+                csv:
+                  type: string
+      responses:
+        "200":
+          description: The report and the spliced document, ready to run.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The CSV is unreadable, the header is wrong, or the spliced document fails the engine's own rules.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /v1/migrate:
+    post:
+      operationId: migrate
+      description: |
+        Plans the staged move sequence from the face's current layout to a
+        target assignment (skuId to slotId, the shape the slotting report's
+        proposal carries). The steps are ordered so no slot is ever
+        double-booked: a carton only moves when its target slot is empty at
+        that moment, and loops of mutually blocking targets are broken
+        through an empty slot, reported as staged moves. Locked SKUs refuse
+        to move, and contradictory targets are refused in words. The labor
+        figure is a stated proxy: one dock-to-dock trip per move at a
+        walking pace plus fixed handling, two trips for a staged move.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fixture:
+                  type: string
+                face:
+                  type: object
+                target:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        "200":
+          description: The ordered move plan with its labor figure and notes.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The target is unreadable, moves a locked SKU, contradicts itself, or the loop cannot be broken.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /v1/putaway:
+    post:
+      operationId: putaway
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/PutawayFixtureRequest"
+                - $ref: "#/components/schemas/PutawayInlineRequest"
+      responses:
+        "200":
+          description: Every shipped policy over one day.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PutawayReport"
+        "400":
+          description: The fixture is unknown or the day cannot be directed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+components:
+  schemas:
+    FixtureRequest:
+      type: object
+      required: [fixture]
+      properties:
+        fixture:
+          type: string
+          example: lane
+    InlineRequest:
+      type: object
+      required: [face]
+      properties:
+        face:
+          type: object
+          description: A face document. See docs/customizing.md.
+    Problem:
+      type: object
+      required: [type, title, status, detail, instance]
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+        reasons:
+          type: array
+          items:
+            type: string
+    PutawayFixtureRequest:
+      type: object
+      required: [fixture]
+      properties:
+        fixture:
+          type: string
+          example: putaway-day
+    PutawayInlineRequest:
+      type: object
+      required: [day]
+      properties:
+        day:
+          type: object
+          description: A putaway day document. See docs/putaway.md.
+    PutawayReport:
+      type: object
+      required: [dayId, dayName, elapsedMillis, outcomes]
+      properties:
+        dayId:
+          type: string
+        dayName:
+          type: string
+        elapsedMillis:
+          type: integer
+        outcomes:
+          type: array
+          items:
+            $ref: "#/components/schemas/PutawayOutcome"
+    PutawayOutcome:
+      type: object
+      required: [policy, directives, refusals, signals, totals]
+      properties:
+        policy:
+          type: string
+          enum: [velocity, affinity, random]
+        directives:
+          type: array
+          items:
+            $ref: "#/components/schemas/PutawayDirectiveRow"
+        refusals:
+          type: array
+          items:
+            $ref: "#/components/schemas/PutawayRefusalRow"
+        signals:
+          type: array
+          items:
+            $ref: "#/components/schemas/PutawaySignalRow"
+        totals:
+          $ref: "#/components/schemas/PutawayTotals"
+    PutawayDirectiveRow:
+      type: object
+      required: [receiptId, skuId, skuName, band, destination, units, uom, cartons]
+      properties:
+        receiptId:
+          type: string
+        skuId:
+          type: string
+        skuName:
+          type: string
+        band:
+          type: string
+          enum: [A, B, C]
+        destination:
+          type: string
+          enum: [forward, reserve]
+        units:
+          type: integer
+        uom:
+          type: string
+        cartons:
+          type: integer
+        slotId:
+          type: string
+        putawayMeters:
+          type: number
+    PutawayRefusalRow:
+      type: object
+      required: [receiptId, reason]
+      properties:
+        receiptId:
+          type: string
+        reason:
+          type: string
+    PutawaySignalRow:
+      type: object
+      required: [skuId, onHand, action, cartons]
+      properties:
+        skuId:
+          type: string
+        onHand:
+          type: number
+        action:
+          type: string
+          enum: [raise, quiet]
+        cartons:
+          type: integer
+    PutawayTotals:
+      type: object
+      required: [receipts, refused, cartons, cartonsForward, cartonsReserve, goldenShare, putawayMeters, baysTouched]
+      properties:
+        receipts:
+          type: integer
+        refused:
+          type: integer
+        cartons:
+          type: integer
+        cartonsForward:
+          type: integer
+        cartonsReserve:
+          type: integer
+        goldenShare:
+          type: number
+        putawayMeters:
+          type: number
+        baysTouched:
+          type: integer
+    SlottingReport:
+      type: object
+      required: [faceId, faceName, mode, elapsedMillis, proposal]
+      properties:
+        faceId:
+          type: string
+        faceName:
+          type: string
+        mode:
+          type: string
+          enum: [replan, improve]
+        elapsedMillis:
+          type: integer
+        proposal:
+          $ref: "#/components/schemas/Outcome"
+        current:
+          $ref: "#/components/schemas/Outcome"
+        comparison:
+          $ref: "#/components/schemas/Comparison"
+    Outcome:
+      type: object
+      required: [assignment, metrics, cost]
+      properties:
+        assignment:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssignmentRow"
+        metrics:
+          $ref: "#/components/schemas/Metrics"
+        cost:
+          $ref: "#/components/schemas/Cost"
+    AssignmentRow:
+      type: object
+      required: [slotId, skuId, skuName, level, ergonomics, returnMeters, cubeFit]
+      properties:
+        slotId:
+          type: string
+        skuId:
+          type: string
+        skuName:
+          type: string
+        level:
+          type: integer
+        ergonomics:
+          type: string
+          enum: [golden, floor, beam]
+        zone:
+          type: string
+        returnMeters:
+          type: number
+        cubeFit:
+          type: number
+    Metrics:
+      type: object
+      properties:
+        travelPickMeters:
+          type: number
+        goldenPickShare:
+          type: number
+        meanCubeFit:
+          type: number
+        heavyAboveLimit:
+          type: integer
+        meanAffinitySteps:
+          type: number
+        placed:
+          type: integer
+        picksPerDay:
+          type: number
+    Cost:
+      type: object
+      properties:
+        travel:
+          type: number
+        waste:
+          type: number
+        golden:
+          type: number
+        lightFloor:
+          type: number
+        affinity:
+          type: number
+        total:
+          type: number
+    Comparison:
+      type: object
+      properties:
+        travelPickMetersBefore:
+          type: number
+        travelPickMetersAfter:
+          type: number
+        travelChange:
+          type: number
+        travelReduction:
+          type: number
+          description: Fraction of current travel removed. Negative when the proposal walks farther.
+        objectiveBefore:
+          type: number
+        objectiveAfter:
+          type: number
+        objectiveChange:
+          type: number
