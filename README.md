@@ -33,6 +33,10 @@ For each open bay the score adds:
 
 It then subtracts a pull toward cartons already sitting nearby that leave on the same orders. The carton takes the lowest score. Travel is an out-and-back per pick line, not a batched tour.
 
+## The dock
+
+[Aisle F–H](/putaway) is the reserve rack behind the face: one day of receipts, 226 cartons, directed by three policies — a velocity skim, an affinity pull, and a seeded random fork to measure the other two against. The page re-runs the same day the [engine](https://github.com/SukrutN/quay-engine) ships as `fixtures/putaway-day.json`, and its figures are locked to the engine's output by tests.
+
 ## What is fictional
 
 Aisles, bays, liters, kilograms, pick counts, and co-pick ties are synthetic. Do not treat the percentages as a study of a real warehouse.

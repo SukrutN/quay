@@ -24,8 +24,11 @@ export function SiteFooter() {
           <Link href="/floor" className="w-fit hover:text-signal">
             02 The face
           </Link>
+          <Link href="/putaway" className="w-fit hover:text-signal">
+            03 The dock
+          </Link>
           <Link href="/#method" className="w-fit hover:text-signal">
-            03 The score
+            04 The score
           </Link>
         </nav>
       </div>

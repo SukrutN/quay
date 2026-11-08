@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 const LINKS = [
   { n: "01", label: "Index", href: "/" },
   { n: "02", label: "The face", href: "/floor" },
-  { n: "03", label: "The score", href: "/#method" },
+  { n: "03", label: "The dock", href: "/putaway" },
+  { n: "04", label: "The score", href: "/#method" },
 ]
 
 export function SiteHeader() {
