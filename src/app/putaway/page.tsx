@@ -3,7 +3,7 @@ import Link from "next/link"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { bandOf, type Band, type PutawayDay, PUTAWAY_DAY } from "@/lib/putaway-day"
-import { allThree, type PutawayDirective, type PutawayResult } from "@/lib/putaway"
+import { allThree, velocityOrder, type PutawayDirective, type PutawayResult } from "@/lib/putaway"
 
 export const metadata: Metadata = {
   title: "The dock",
@@ -44,6 +44,29 @@ function lineOf(result: PutawayResult, receiptId: string, destination: string): 
 function meters(number: number) {
   return number.toFixed(1)
 }
+
+/**
+ * The velocity curve: per SKU in mobility order, how far its first reserve
+ * landing sits from the dock. Directed policies climb; the fork is a jagged
+ * mess — that shape is the argument for direction.
+ */
+function curve(day: PutawayDay, result: PutawayResult): number[] {
+  const first = new Map<string, number>()
+  for (const directive of result.directives) {
+    if (directive.destination === "reserve" && !first.has(directive.skuId)) {
+      first.set(directive.skuId, directive.putawayMeters)
+    }
+  }
+  const points: number[] = []
+  for (const receipt of velocityOrder(day)) {
+    const landing = first.get(receipt.skuId)
+    if (landing !== undefined) points.push(landing)
+  }
+  return points
+}
+
+const CURVE_COLORS = ["#51e076", "rgba(247, 247, 247, 0.8)", "rgba(163, 163, 163, 0.6)"]
+const CURVE_NAMES = ["Velocity", "Affinity", "The fork"]
 
 export default function PutawayPage() {
   const day = PUTAWAY_DAY
@@ -120,6 +143,16 @@ export default function PutawayPage() {
   const armedSkuIds = new Set(
     directed.signals.filter((s) => s.action === "raise").map((s) => s.skuId).filter((skuId) => !directed.signals.some((q) => q.action === "quiet" && q.skuId === skuId)),
   )
+  const curves = [curve(day, directed), curve(day, together), curve(day, fork)]
+  const curveMax = Math.max(...curves.flat())
+  const toPath = (points: number[]) =>
+    points
+      .map((metersToBay, index) => {
+        const x = points.length > 1 ? (index / (points.length - 1)) * 96 + 2 : 50
+        const y = 52 - (metersToBay / curveMax) * 46
+        return `${index === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`
+      })
+      .join(" ")
 
   return (
     <>
@@ -178,6 +211,49 @@ export default function PutawayPage() {
               golden-band share drops to {(together.totals.goldenShare * 100).toFixed(0)}%. The pull is visible; the price
               is printed next to it.
             </p>
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 px-5 py-16 sm:px-8 lg:px-12">
+          <h2 className="max-w-3xl text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] tracking-[-0.04em]">
+            The velocity curve.
+          </h2>
+          <p className="mt-4 max-w-2xl text-silver">
+            Each point is one SKU&apos;s first reserve landing, drawn left to right in mobility order — the fastest tin
+            at the left edge, the last mortar at the right. Directed plans climb in an orderly ramp; the fork fills the
+            same chart with noise. Eyeline is the dock; the top of the chart is {meters(curveMax)} m.
+          </p>
+          <div className="mt-10 max-w-4xl">
+            <svg
+              viewBox="0 0 100 54"
+              preserveAspectRatio="none"
+              className="h-44 w-full"
+              role="img"
+              aria-label="Putaway meters per SKU from fastest to slowest, three policies"
+            >
+              <line x1="2" y1="52" x2="98" y2="52" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+              <line x1="2" y1="6" x2="98" y2="6" stroke="rgba(255, 255, 255, 0.07)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+              {curves.map((points, index) => (
+                <path
+                  key={CURVE_NAMES[index]}
+                  d={toPath(points)}
+                  fill="none"
+                  stroke={CURVE_COLORS[index]}
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))}
+            </svg>
+            <div className="mt-3 flex flex-wrap items-center gap-x-8 gap-y-2 font-mono text-[11px] tracking-[0.16em] text-silver uppercase">
+              {CURVE_NAMES.map((name, index) => (
+                <span key={name} className="flex items-center gap-2">
+                  <span className="inline-block h-[3px] w-6 rounded" style={{ backgroundColor: CURVE_COLORS[index] }} />
+                  {name}
+                </span>
+              ))}
+              <span className="ml-auto">fastest at the left · slowest at the right</span>
+            </div>
           </div>
         </section>
 
