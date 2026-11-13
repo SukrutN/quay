@@ -1,0 +1,299 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * The visual system: a near-black canvas (#0d0d0d) with signal yellow
+ * (#fbaa19) and off-white (#f1f1f1) accents, 4px component radii, a
+ * clamp() heading ladder, a fluid spacing ladder, a bounded easing set,
+ * and a 340-to-1400 breakpoint ladder.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+
+  /* Canvas: near black, signal yellow, off-white. */
+  --color-signal: #fbaa19;
+  --color-deep: #0d0d0d;
+  --color-smoke: #161616;
+  --color-paper: #f1f1f1;
+  --color-silver: #a3a3a3;
+  --color-ink: #080808;
+
+  /* Breakpoint ladder, 340 to 1400. */
+  --breakpoint-2xs: 340px;
+  --breakpoint-xs: 500px;
+  --breakpoint-sm: 700px;
+  --breakpoint-md: 1000px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1400px;
+
+  /* Heading ladder: bounded interpolation, one step per role. */
+  --text-heading-3xl: clamp(4rem, 2.5rem + 7.5vw, 9.25rem);
+  --text-heading-3xl--line-height: 1;
+  --text-heading-3xl--letter-spacing: -0.05em;
+  --text-heading-2xl: clamp(2.0625rem, 1.2946rem + 3.8393vw, 4.75rem);
+  --text-heading-2xl--line-height: 1;
+  --text-heading-2xl--letter-spacing: -0.05em;
+  --text-heading-xl: clamp(2.375rem, 1.7679rem + 3.0357vw, 4.5rem);
+  --text-heading-xl--line-height: 1;
+  --text-heading-xl--letter-spacing: -0.05em;
+  --text-heading-lg: clamp(2.125rem, 1.5893rem + 2.6786vw, 4rem);
+  --text-heading-lg--line-height: 1;
+  --text-heading-lg--letter-spacing: -0.05em;
+  --text-heading-md: clamp(1.5rem, 1.0714rem + 2.1429vw, 3rem);
+  --text-heading-md--line-height: 1;
+  --text-heading-md--letter-spacing: -0.05em;
+  --text-heading-sm: clamp(1.5rem, 1.3214rem + 0.8929vw, 2.125rem);
+  --text-heading-sm--line-height: 1.2;
+  --text-heading-sm--letter-spacing: -0.05em;
+  --text-heading-xs: clamp(1.375rem, 1.3393rem + 0.1786vw, 1.5rem);
+  --text-heading-xs--line-height: 1.25;
+  --text-heading-xs--letter-spacing: -0.03em;
+  --text-heading-2xs: clamp(1.125rem, 1.0893rem + 0.1786vw, 1.25rem);
+  --text-heading-2xs--line-height: 1.25;
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-4xl: 32px;
+}
+
+:root,
+.dark {
+  --background: #0d0d0d;
+  --foreground: #f1f1f1;
+  --card: #161616;
+  --card-foreground: #f1f1f1;
+  --popover: #161616;
+  --popover-foreground: #f1f1f1;
+  --primary: #fbaa19;
+  --primary-foreground: #0d0d0d;
+  --secondary: #161616;
+  --secondary-foreground: #f1f1f1;
+  --muted: #161616;
+  --muted-foreground: #a3a3a3;
+  --accent: #fbaa19;
+  --accent-foreground: #0d0d0d;
+  --destructive: #ff5c4d;
+  --border: color-mix(in srgb, #f1f1f1 16%, transparent);
+  --input: color-mix(in srgb, #f1f1f1 16%, transparent);
+  --ring: #fbaa19;
+  --chart-1: #fbaa19;
+  --chart-2: #f1f1f1;
+  --chart-3: #a3a3a3;
+  --chart-4: #161616;
+  --chart-5: #080808;
+  --radius: 4px;
+  --sidebar: #161616;
+  --sidebar-foreground: #f1f1f1;
+  --sidebar-primary: #fbaa19;
+  --sidebar-primary-foreground: #0d0d0d;
+  --sidebar-accent: #0d0d0d;
+  --sidebar-accent-foreground: #f1f1f1;
+  --sidebar-border: color-mix(in srgb, #f1f1f1 16%, transparent);
+  --sidebar-ring: #fbaa19;
+
+  /* Fluid spacing ladder, bounded interpolation. */
+  --fluid-xs: clamp(1.25rem, 1.0714rem + 0.8929vw, 1.875rem);
+  --fluid-sm: clamp(1.875rem, 1.6964rem + 0.8929vw, 2.5rem);
+  --fluid-md: clamp(2.5rem, 2.2857rem + 1.0714vw, 3.25rem);
+  --fluid-lg: clamp(3.25rem, 2.75rem + 2.5vw, 5rem);
+  --fluid-xl: clamp(5rem, 4.6429rem + 1.7857vw, 6.25rem);
+  --fluid-2xl: clamp(6.25rem, 5.3571rem + 4.4643vw, 9.375rem);
+  --fluid-3xl: clamp(9.375rem, 8.4821rem + 4.4643vw, 12.5rem);
+  --fluid-4xl: clamp(12.5rem, 11.6071rem + 4.4643vw, 15.625rem);
+
+  /* Easing set. */
+  --ease-smooth: cubic-bezier(0.38, 0, 0.215, 1);
+  --ease-slow-out: cubic-bezier(0, 1, 0.4, 1);
+  --ease-expo-out: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-back-out: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    background: #0d0d0d;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+  }
+  ::selection {
+    background: #fbaa19;
+    color: #0d0d0d;
+  }
+}
+
+/*
+ * The hero words rise out of their masks once, on load, in the slow-out
+ * curve. It is a one-shot keyed entrance for content already on
+ * screen, not a scroll reveal, so the static export ships every word
+ * present and settled; under reduced motion nothing moves at all.
+ */
+.hero-line {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.hero-word {
+  display: inline-block;
+  transform-origin: bottom;
+  animation: quay-hero-word 0.9s var(--ease-slow-out) calc(var(--i) * 90ms) both;
+}
+
+@keyframes quay-hero-word {
+  from {
+    transform: translateY(112%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.hero-fade {
+  animation: quay-hero-fade 0.9s var(--ease-smooth) 300ms both;
+}
+
+@keyframes quay-hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * The underline sweep: links grow their own underline from the left
+ * edge in the smooth easing.
+ */
+.sweep {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.45s var(--ease-smooth);
+  text-decoration: none;
+}
+
+.sweep:hover,
+.sweep:focus-visible {
+  background-size: 100% 1px;
+}
+
+/*
+ * The footer stage: a dimmed rack grid behind the content, covered by a
+ * veil that opens a window wherever the cursor rests. The grid stays
+ * neutral so the page keeps its black-dominant ratio; yellow is reserved
+ * for the closer's heading and the small accents. The veil is inert
+ * (pointer-events off), so no link beneath it ever loses a click. Under
+ * reduced motion the window sits open at a fixed spot and never moves.
+ */
+.footer-stage {
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.6;
+  background-image:
+    linear-gradient(90deg, rgba(241, 241, 241, 0.13) 1px, transparent 1px),
+    linear-gradient(rgba(241, 241, 241, 0.13) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.footer-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #0d0d0d;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle 170px at var(--cursor-x, -999px) var(--cursor-y, -999px), transparent 0, transparent 110px, black 150px);
+  mask-image: radial-gradient(circle 170px at var(--cursor-x, -999px) var(--cursor-y, -999px), transparent 0, transparent 110px, black 150px);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+@keyframes quay-scan {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(420%);
+  }
+}
+
+.quay-scan {
+  animation: quay-scan 1.15s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word,
+  .hero-fade,
+  .quay-scan {
+    animation: none;
+  }
+  .footer-veil {
+    --cursor-x: 50%;
+    --cursor-y: 45%;
+  }
+  .sweep {
+    transition: none;
+  }
+}
