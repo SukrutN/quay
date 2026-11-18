@@ -16,7 +16,7 @@ export default function FloorPage() {
       <main id="content">
         <header className="px-5 pt-12 pb-8 sm:px-8 lg:px-12 lg:pt-16">
           <p className="font-mono text-[11px] tracking-[0.18em] text-silver uppercase">
-            02 — House 4, Coldwater Reach
+            02. House 4, Coldwater Reach
           </p>
           <h1 className="rise mt-4 max-w-5xl text-[clamp(3.5rem,8vw,7.2rem)] leading-[0.86] tracking-[-0.05em]">
             The face.

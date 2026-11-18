@@ -104,7 +104,7 @@ function BayRow({
             </span>
             <span className="mt-1 block truncate text-sm tracking-[-0.03em]">{sku ? sku.short : "Open"}</span>
             <span className={`mt-0.5 block font-mono text-[10px] ${ink ? "text-deep/80" : "text-silver"}`}>
-              {sku ? `${sku.picks} picks` : "—"}
+              {sku ? `${sku.picks} picks` : ". "}
             </span>
           </button>
         )

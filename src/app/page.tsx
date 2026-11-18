@@ -41,7 +41,7 @@ const NOTES = [
     n: "02",
     title: "The golden band",
     meta: "Levels 2–3",
-    body: "Waist to shoulder. Anchors — a little over half of all picks — are offered these bays before anywhere else.",
+    body: "Waist to shoulder. Anchors, a little over half of all picks, are offered these bays before anywhere else.",
   },
   {
     n: "03",
@@ -71,7 +71,7 @@ export default function HomePage() {
       <SiteHeader />
       <main id="content">
         <section className="flex min-h-[calc(100svh-4.25rem)] flex-col justify-between px-5 pt-12 pb-8 sm:px-8 lg:px-12 lg:pt-16">
-          <p className="font-mono text-[11px] tracking-[0.18em] text-silver uppercase">01 — Forward pick face</p>
+          <p className="font-mono text-[11px] tracking-[0.18em] text-silver uppercase">01. Forward pick face</p>
           <h1 className="rise max-w-[12ch] text-[clamp(4.4rem,12vw,9.2rem)] leading-[0.84] font-medium tracking-[-0.05em]">
             Shorten
             <br />

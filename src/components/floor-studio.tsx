@@ -163,7 +163,7 @@ export function FloorStudio() {
         <CollapsibleContent className="px-4 pb-5">
           <div className="grid gap-6 border-t border-white/10 pt-4 lg:grid-cols-3">
             <p className="text-sm leading-relaxed text-silver">
-              <span className="text-paper">Reach.</span> Daily picks multiply the return walk from the south dock, and a stoop or a ladder makes that walk count for more. Anchors — the cartons that add up to just over half of all picks — are placed first, and only in the golden band unless nothing there can hold them.
+              <span className="text-paper">Reach.</span> Daily picks multiply the return walk from the south dock, and a stoop or a ladder makes that walk count for more. Anchors, the cartons that add up to just over half of all picks, are placed first, and only in the golden band unless nothing there can hold them.
             </p>
             <p className="text-sm leading-relaxed text-silver">
               <span className="text-paper">Mass and fit.</span> Anything at 12 kg or more is pulled onto the floor and refused the top beam. Light cartons are nudged off the floor so that shelf stays free. A carton must fit. Among bays that can hold it, a tighter leftover scores better.
@@ -181,7 +181,7 @@ export function FloorStudio() {
           <h2 className="mt-4 max-w-3xl text-4xl tracking-[-0.04em] sm:text-5xl">This file cannot be placed.</h2>
           <p className="mt-5 max-w-xl text-silver">{fault}</p>
           <p className="mt-3 max-w-xl text-sm text-silver">
-            Quay stopped before touching a bay. Restore the sample extract — thirty readable cartons — and run the placement again.
+            Quay stopped before touching a bay. Restore the sample extract, thirty readable cartons, and run the placement again.
           </p>
           <Button className="mt-8" onClick={() => show("arrived")}>
             Restore the sample
@@ -191,7 +191,7 @@ export function FloorStudio() {
         <>
           {walkCut !== null && proposalMetrics ? (
             <p className="mt-8 max-w-4xl text-2xl tracking-[-0.04em] sm:text-3xl" aria-live="polite">
-              The proposal walks {walkCut}% less than the layout that arrived — {formatWalk(proposalMetrics.walkMeters)} a day instead of {formatWalk(arrivedMetrics.walkMeters)}.
+              The proposal walks {walkCut}% less than the layout that arrived. {formatWalk(proposalMetrics.walkMeters)} a day instead of {formatWalk(arrivedMetrics.walkMeters)}.
             </p>
           ) : (
             <p className="mt-8 max-w-3xl text-xl tracking-[-0.03em] text-silver sm:text-2xl">
@@ -203,28 +203,28 @@ export function FloorStudio() {
             <Metric
               label="Return walk"
               hint="Each pick line walks out to its bay and back to the south dock. This is not a batched tour."
-              value={shownMetrics.placed === 0 ? "—" : formatWalk(shownMetrics.walkMeters)}
+              value={shownMetrics.placed === 0 ? ". " : formatWalk(shownMetrics.walkMeters)}
               note={metricNote(shownMetrics, arrivedMetrics, proposalMetrics, mode, (m) => m.walkMeters, formatWalk)}
               good={better("down", shownMetrics.walkMeters, arrivedMetrics.walkMeters, mode)}
             />
             <Metric
               label="Golden picks"
               hint="Share of daily picks that land on level 2 or 3, between waist and shoulder."
-              value={shownMetrics.placed === 0 ? "—" : formatShare(shownMetrics.goldenShare)}
+              value={shownMetrics.placed === 0 ? ". " : formatShare(shownMetrics.goldenShare)}
               note={metricNote(shownMetrics, arrivedMetrics, proposalMetrics, mode, (m) => m.goldenShare, formatShare)}
               good={better("up", shownMetrics.goldenShare, arrivedMetrics.goldenShare, mode)}
             />
             <Metric
               label="Cube fit"
               hint="Average share of each occupied bay that the carton actually fills."
-              value={shownMetrics.placed === 0 ? "—" : formatFit(shownMetrics.meanFit)}
+              value={shownMetrics.placed === 0 ? ". " : formatFit(shownMetrics.meanFit)}
               note={metricNote(shownMetrics, arrivedMetrics, proposalMetrics, mode, (m) => m.meanFit, formatFit)}
               good={better("up", shownMetrics.meanFit, arrivedMetrics.meanFit, mode)}
             />
             <Metric
               label="Heavy on the beam"
               hint="Cartons of 12 kg or more sitting on level 4."
-              value={shownMetrics.placed === 0 ? "—" : String(shownMetrics.heavyOnBeam)}
+              value={shownMetrics.placed === 0 ? ". " : String(shownMetrics.heavyOnBeam)}
               note={metricNote(shownMetrics, arrivedMetrics, proposalMetrics, mode, (m) => m.heavyOnBeam, (value) => String(value))}
               good={better("down", shownMetrics.heavyOnBeam, arrivedMetrics.heavyOnBeam, mode)}
             />
@@ -233,9 +233,9 @@ export function FloorStudio() {
             <p className="mt-3 max-w-3xl text-sm text-silver">
               Co-picked pairs sit {formatSteps(shownMetrics.kinshipSteps)} aisle-and-bay steps apart
               {mode === "proposed"
-                ? ` — ${formatSteps(arrivedMetrics.kinshipSteps)} on the arrived face.`
+                ? `. ${formatSteps(arrivedMetrics.kinshipSteps)} on the arrived face.`
                 : mode === "arrived" && proposalMetrics
-                  ? ` — ${formatSteps(proposalMetrics.kinshipSteps)} after the proposal.`
+                  ? `. ${formatSteps(proposalMetrics.kinshipSteps)} after the proposal.`
                   : "."}
             </p>
           ) : null}

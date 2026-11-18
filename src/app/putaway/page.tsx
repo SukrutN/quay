@@ -48,7 +48,7 @@ function meters(number: number) {
 /**
  * The velocity curve: per SKU in mobility order, how far its first reserve
  * landing sits from the dock. Directed policies climb; the fork is a jagged
- * mess — that shape is the argument for direction.
+ * mess, that shape is the argument for direction.
  */
 function curve(day: PutawayDay, result: PutawayResult): number[] {
   const first = new Map<string, number>()
@@ -96,12 +96,12 @@ export default function PutawayPage() {
     {
       name: "Affinity",
       result: together,
-      note: "Runs the velocity skim, then lets partners already landed this day pull the choice. A hair of walk is the honest price for sitting near the work it leaves with.",
+      note: "Runs the velocity skim, then lets partners already landed this day pull the choice. Sitting near the work it leaves with costs a little extra walking.",
     },
     {
       name: "The fork",
       result: fork,
-      note: "The manifest in arrival order, the bays in one shuffle of seed 1998. This is the day nobody directed — the control the other two have to beat.",
+      note: "The manifest in arrival order, the bays in one shuffle of seed 1998. This is the day nobody directed, the control the other two have to beat.",
     },
   ]
 
@@ -116,7 +116,7 @@ export default function PutawayPage() {
       receipt: "R-10",
       sku: "Linen tea towels",
       load: "4 cartons",
-      headline: `Cheapest floor is ${r10Directed.slotId} at ${meters(r10Directed.putawayMeters)} m — but cedar soap landed at ${r07Bay} under affinity, so the towels pay ${meters(
+      headline: `Cheapest floor is ${r10Directed.slotId} at ${meters(r10Directed.putawayMeters)} m, but cedar soap landed at ${r07Bay} under affinity, so the towels pay ${meters(
         r10Together.putawayMeters - r10Directed.putawayMeters,
       )} m more to sit in ${r10Together.slotId}, the same bay as the work they leave with.`,
     },
@@ -136,7 +136,7 @@ export default function PutawayPage() {
       receipt: "R-25",
       sku: "Iron pan blanks",
       load: "2 cartons",
-      headline: `Twelve-kilogram iron may not rise a level, and ${r25Reserve.slotId} already held its own stock — so today's ${r25Reserve.cartons} top off the floor bay the pan opened the day in.`,
+      headline: `Twelve-kilogram iron may not rise a level, and ${r25Reserve.slotId} already held its own stock, so today's ${r25Reserve.cartons} top off the floor bay the pan opened the day in.`,
     },
   ]
 
@@ -159,12 +159,12 @@ export default function PutawayPage() {
       <SiteHeader />
       <main id="content">
         <header className="px-5 pt-12 pb-8 sm:px-8 lg:px-12 lg:pt-16">
-          <p className="font-mono text-[11px] tracking-[0.18em] text-silver uppercase">03 — Harbor &amp; Lane, reserve aisles F–H</p>
+          <p className="font-mono text-[11px] tracking-[0.18em] text-silver uppercase">03. Harbor &amp; Lane, reserve aisles F–H</p>
           <h1 className="rise mt-4 max-w-5xl text-[clamp(3.5rem,8vw,7.2rem)] leading-[0.86] tracking-[-0.05em]">
             The dock.
           </h1>
           <p className="rise-late mt-6 max-w-2xl text-lg text-silver">
-            Behind the pick face, one day of receipts: thirty lines, 226 cartons. Three ways to direct them — a velocity
+            Behind the pick face, one day of receipts: thirty lines, 226 cartons. Three ways to direct them, a velocity
             skim, an affinity pull, and a seeded random fork to measure the other two against.
           </p>
         </header>
@@ -204,7 +204,7 @@ export default function PutawayPage() {
           </div>
           <div className="mt-8 space-y-2 border-l-2 border-signal pl-5">
             <p>
-              Directed against the fork: {meters(saving)} m less to walk — {percent}% of the day&apos;s travel.
+              Directed against the fork: {meters(saving)} m less to walk. {percent}% of the day&apos;s travel.
             </p>
             <p className="text-silver">
               Affinity against velocity: +{meters(speeds[1] - speeds[0])} m to pull partners together, and the
@@ -219,7 +219,7 @@ export default function PutawayPage() {
             The velocity curve.
           </h2>
           <p className="mt-4 max-w-2xl text-silver">
-            Each point is one SKU&apos;s first reserve landing, drawn left to right in mobility order — the fastest tin
+            Each point is one SKU&apos;s first reserve landing, drawn left to right in mobility order, the fastest tin
             at the left edge, the last mortar at the right. Directed plans climb in an orderly ramp; the fork fills the
             same chart with noise. Eyeline is the dock; the top of the chart is {meters(curveMax)} m.
           </p>
@@ -262,7 +262,7 @@ export default function PutawayPage() {
             Where the day landed.
           </h2>
           <p className="mt-4 max-w-2xl text-silver">
-            Three aisles, eight bays, four levels — bright cells arrived today, dim cells opened the day with stock.
+            Three aisles, eight bays, four levels, bright cells arrived today, dim cells opened the day with stock.
             Color is the receipt&apos;s velocity band: A runs green, B runs paper, C runs silver.
           </p>
           <div className="mt-10 space-y-10">
@@ -271,7 +271,7 @@ export default function PutawayPage() {
               return (
                 <div key={panel.name}>
                   <p className="font-mono text-[11px] tracking-[0.16em] text-silver uppercase">
-                    {panel.name} — {meters(panel.result.totals.putawayMeters)} m
+                    {panel.name}. {meters(panel.result.totals.putawayMeters)} m
                   </p>
                   <div className="mt-3 flex gap-6 overflow-x-auto pb-2">
                     {day.slots
@@ -385,7 +385,7 @@ export default function PutawayPage() {
           </div>
           <p className="mt-6 max-w-2xl text-silver">
             {armedSkuIds.size ? [...armedSkuIds].join(" and ") : "Nothing"} leave{armedSkuIds.size === 1 ? "s" : ""} the day
-            still armed — quiet needs not just the minimum, but the minimum plus hysteresis, and the day
+            still armed, quiet needs not just the minimum, but the minimum plus hysteresis, and the day
             can&apos;t always buy that.
           </p>
         </section>
@@ -417,7 +417,7 @@ export default function PutawayPage() {
             What the day refuses.
           </h2>
           <p className="mt-4 max-w-2xl text-silver">
-            Zero refusals today — the rack had room. The checks ran anyway, and they are why the ending state adds up:
+            Zero refusals today, the rack had room. The checks ran anyway, and they are why the ending state adds up:
           </p>
           <ul className="mt-8 max-w-3xl space-y-3 text-silver">
             <li>
@@ -443,15 +443,15 @@ export default function PutawayPage() {
         <section className="border-t border-white/10 px-5 py-16 sm:px-8 lg:px-12">
           <h2 className="max-w-3xl text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] tracking-[-0.04em]">Lineage.</h2>
           <p className="mt-4 max-w-2xl text-silver">
-            The three policies are the classic trio the slotting literature compares — dedicated placement by velocity,
+            The three policies are the classic trio the slotting literature compares, dedicated placement by velocity,
             correlated placement by affinity, and a randomized control. The corridor cost model, the band premiums, and
             the forward-pick thresholds are all textbook fare.
           </p>
           <ul className="mt-8 max-w-3xl space-y-2 text-silver">
-            <li>van den Berg, 1999 — a literature survey of storage and assignment planning.</li>
-            <li>de Koster, 2007 — the order-picking reviews that frame directed versus undirected travel.</li>
-            <li>Gu, Goetschalckx &amp; McGinnis, 2007 — warehouse operation research reviews.</li>
-            <li>Bartholdi &amp; Hackman — <span className="italic">Warehouse &amp; Distribution Science</span>, the open textbook.</li>
+            <li>van den Berg, 1999, a literature survey of storage and assignment planning.</li>
+            <li>de Koster, 2007, the order-picking reviews that frame directed versus undirected travel.</li>
+            <li>Gu, Goetschalckx &amp; McGinnis, 2007, warehouse operation research reviews.</li>
+            <li>Bartholdi &amp; Hackman. <span className="italic">Warehouse &amp; Distribution Science</span>, the open textbook.</li>
           </ul>
           <p className="mt-8 max-w-2xl text-silver">
             The extract is invented. The face these aisles feed is <Link href="/floor" className="text-paper underline decoration-white/20 underline-offset-4 hover:text-signal">the floor</Link>, and the
