@@ -17,8 +17,8 @@ const mono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Quay — slotting for House 4",
-    template: "%s — Quay",
+    default: "Quay, slotting for House 4",
+    template: "%s. Quay",
   },
   description:
     "Quay places thirty fictional cartons on a forward pick face. A kinship-reach score balances walk, weight, cube, and items that leave the dock together.",

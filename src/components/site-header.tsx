@@ -94,7 +94,7 @@ export function SiteHeader() {
             </ul>
             <div className="grid gap-8 border-t border-white/10 pt-8 sm:grid-cols-2">
               <p className="max-w-sm text-silver">
-                Coldwater Reach is not a port. Marrow Goods is not a company. Thirty cartons, five aisles, and a south dock — a sample you can re-slot in this browser.
+                Coldwater Reach is not a port. Marrow Goods is not a company. Thirty cartons, five aisles, and a south dock, a sample you can re-slot in this browser.
               </p>
               <p className="font-mono text-[11px] leading-6 tracking-[0.14em] text-silver uppercase">
                 No account
