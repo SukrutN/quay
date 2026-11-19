@@ -1,5 +1,7 @@
 # Quay
 
+Live site: https://sukrutn.github.io/quay/
+
 Quay is a small slotting notebook for a fictional forward pick face. House 4 at Coldwater Reach belongs to Marrow Goods, a dry-goods wholesaler that does not exist. Thirty invented cartons sit on five aisles. You can compare the clumsy layout that arrived with a proposal, then click any bay.
 
 The sample never leaves the browser. There is no account and no database.
