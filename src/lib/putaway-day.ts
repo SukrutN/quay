@@ -1,8 +1,10 @@
 /**
- * Harbor & Lane day 07 — the putaway day. The same invented fixture the engine
- * ships (fixtures/putaway-day.json), carried here so the notebook re-runs the
- * day without a server. Not a real warehouse.
+ * Harbor & Lane day 07 — the putaway day, read from the engine's published
+ * fixture (engine/fixtures/putaway-day.json) instead of a hand-carried copy.
+ * The engine's field names (picksPerDay, skuA/skuB, the rack block) become
+ * the site's; the numbers have one home. Not a real warehouse.
  */
+import dayJson from "../../engine/fixtures/putaway-day.json"
 
 export type PutawaySlot = {
   id: string
@@ -62,18 +64,15 @@ export type PutawayDay = {
   seed: number
 }
 
-const AISLES = ["F", "G", "H"] as const
-const BAYS = [1, 2, 3, 4, 5, 6, 7, 8] as const
-const LEVELS = [1, 2, 3, 4] as const
-
-const BASE_CUBE: Record<number, number> = { 1: 168, 2: 120, 3: 96, 4: 56 }
+const RACK_SPEC = dayJson.rack
+const CUBE_BY_LEVEL: Record<string, number> = RACK_SPEC.cubeLitersByLevel
 
 export const RACK = {
-  dockToFirstAisleMeters: 12.4,
-  aislePitchMeters: 3.6,
-  mouthToFirstBayMeters: 2.4,
-  bayPitchMeters: 3.0,
-  wideMultiplier: 1.5,
+  dockToFirstAisleMeters: RACK_SPEC.dockToFirstAisleMeters,
+  aislePitchMeters: RACK_SPEC.aislePitchMeters,
+  mouthToFirstBayMeters: RACK_SPEC.mouthToFirstBayMeters,
+  bayPitchMeters: RACK_SPEC.bayPitchMeters,
+  wideMultiplier: RACK_SPEC.wideMultiplier,
 } as const
 
 export type Band = "A" | "B" | "C"
@@ -90,14 +89,16 @@ export function oneWayMeters(slot: { aisleIndex: number; bayIndex: number }) {
   return across + into
 }
 
-/** The reserve rack: three aisles x eight bays x four levels, in plan order. */
+/** The reserve rack the day document describes: three aisles x eight bays x four levels, in plan order. */
 export function buildReserveSlots(): PutawaySlot[] {
+  const wideBays = new Set<number>(RACK_SPEC.wideBays)
+  const goldenLevels = new Set<number>(RACK_SPEC.goldenLevels)
   const slots: PutawaySlot[] = []
-  AISLES.forEach((aisle, aisleIndex) => {
-    BAYS.forEach((bay, bayIndex) => {
-      LEVELS.forEach((level) => {
-        const wide = bay === 2 || bay === 6
-        const ergonomics = level === 1 ? "floor" : level === 2 || level === 3 ? "golden" : "beam"
+  RACK_SPEC.aisles.forEach((aisle, aisleIndex) => {
+    RACK_SPEC.bays.forEach((bay, bayIndex) => {
+      RACK_SPEC.levels.forEach((level) => {
+        const wide = wideBays.has(bay)
+        const ergonomics = level === RACK_SPEC.floorLevel ? "floor" : goldenLevels.has(level) ? "golden" : "beam"
         slots.push({
           id: `${aisle}-${String(bay).padStart(2, "0")}-L${level}`,
           aisle,
@@ -105,7 +106,7 @@ export function buildReserveSlots(): PutawaySlot[] {
           bay,
           bayIndex,
           level,
-          cubeLiters: BASE_CUBE[level] * (wide ? RACK.wideMultiplier : 1),
+          cubeLiters: CUBE_BY_LEVEL[String(level)] * (wide ? RACK.wideMultiplier : 1),
           ergonomics,
         })
       })
@@ -114,140 +115,23 @@ export function buildReserveSlots(): PutawaySlot[] {
   return slots
 }
 
-const SLOT_ROWS = buildReserveSlots()
-
 export const PUTAWAY_DAY: PutawayDay = {
-  id: "putaway-day",
-  name: "Harbor & Lane day 07",
-  slots: SLOT_ROWS,
-  skus: [
-    { id: "MG-01", name: "Blue tin coffee", picks: 240, cubeLiters: 4.2, weightKg: 1.6 },
-    { id: "MG-02", name: "Paper sleeve filters", picks: 188, cubeLiters: 1.4, weightKg: 0.3 },
-    { id: "MG-03", name: "Matchbox cloves", picks: 156, cubeLiters: 0.9, weightKg: 0.2 },
-    { id: "MG-04", name: "Rye cracker crates", picks: 142, cubeLiters: 18, weightKg: 6.4 },
-    { id: "MG-05", name: "Fennel salt tins", picks: 128, cubeLiters: 3.1, weightKg: 2.8 },
-    { id: "MG-06", name: "Peppercorn drums", picks: 110, cubeLiters: 6.5, weightKg: 3.2 },
-    { id: "MG-07", name: "Cedar soap bars", picks: 96, cubeLiters: 5, weightKg: 2.4 },
-    { id: "MG-08", name: "Lemon oil vials", picks: 90, cubeLiters: 1.2, weightKg: 0.5 },
-    { id: "MG-09", name: "Honeycomb wraps", picks: 84, cubeLiters: 2.4, weightKg: 0.4 },
-    { id: "MG-10", name: "Linen tea towels", picks: 72, cubeLiters: 8, weightKg: 1.1 },
-    { id: "MG-11", name: "River oat sacks", picks: 64, cubeLiters: 28, weightKg: 14.5 },
-    { id: "MG-12", name: "White bean sacks", picks: 58, cubeLiters: 26, weightKg: 15.2 },
-    { id: "MG-13", name: "Cask vinegar jugs", picks: 52, cubeLiters: 16, weightKg: 13.4 },
-    { id: "MG-14", name: "Birch syrup bottles", picks: 48, cubeLiters: 11, weightKg: 9.6 },
-    { id: "MG-15", name: "Pilot candle tins", picks: 44, cubeLiters: 3.6, weightKg: 1.8 },
-    { id: "MG-16", name: "Glass lamp oil", picks: 40, cubeLiters: 9.5, weightKg: 12.8 },
-    { id: "MG-17", name: "Citrus peel jars", picks: 36, cubeLiters: 7.2, weightKg: 4.4 },
-    { id: "MG-18", name: "Ash wood spoons", picks: 32, cubeLiters: 4.8, weightKg: 0.9 },
-    { id: "MG-19", name: "Wool dryer balls", picks: 28, cubeLiters: 10, weightKg: 0.7 },
-    { id: "MG-20", name: "Copper measuring cups", picks: 24, cubeLiters: 3.4, weightKg: 2.6 },
-    { id: "MG-21", name: "Millet grain bags", picks: 22, cubeLiters: 24, weightKg: 13.8 },
-    { id: "MG-22", name: "Ink bottle black", picks: 18, cubeLiters: 1.1, weightKg: 0.6 },
-    { id: "MG-23", name: "Night chalk sticks", picks: 16, cubeLiters: 2, weightKg: 1.4 },
-    { id: "MG-24", name: "Canvas mailers", picks: 14, cubeLiters: 12, weightKg: 0.8 },
-    { id: "MG-25", name: "Iron pan blanks", picks: 12, cubeLiters: 20, weightKg: 16.4 },
-    { id: "MG-26", name: "Clay planter saucers", picks: 11, cubeLiters: 22, weightKg: 14.1 },
-    { id: "MG-27", name: "Stone mortar", picks: 9, cubeLiters: 15, weightKg: 18.2 },
-    { id: "MG-28", name: "Folding crate lids", picks: 8, cubeLiters: 34, weightKg: 4.2 },
-    { id: "MG-29", name: "Bolt of ticking cloth", picks: 8, cubeLiters: 40, weightKg: 7.5 },
-    { id: "MG-30", name: "Rain boot corks", picks: 7, cubeLiters: 14, weightKg: 1.2 },
-  ],
-  affinities: [
-    { a: "MG-01", b: "MG-02", strength: 0.92 },
-    { a: "MG-01", b: "MG-03", strength: 0.74 },
-    { a: "MG-01", b: "MG-04", strength: 0.48 },
-    { a: "MG-01", b: "MG-11", strength: 0.36 },
-    { a: "MG-05", b: "MG-04", strength: 0.81 },
-    { a: "MG-05", b: "MG-06", strength: 0.7 },
-    { a: "MG-05", b: "MG-13", strength: 0.52 },
-    { a: "MG-05", b: "MG-17", strength: 0.45 },
-    { a: "MG-07", b: "MG-08", strength: 0.66 },
-    { a: "MG-07", b: "MG-10", strength: 0.73 },
-    { a: "MG-07", b: "MG-09", strength: 0.6 },
-    { a: "MG-11", b: "MG-12", strength: 0.7 },
-    { a: "MG-16", b: "MG-15", strength: 0.78 },
-    { a: "MG-03", b: "MG-14", strength: 0.3 },
-  ],
-  uoms: {
-    "MG-15": { case: 4 },
-    "MG-23": { case: 4 },
-  },
-  receipts: [
-    { id: "R-01", skuId: "MG-01", units: 8, uom: "carton" },
-    { id: "R-02", skuId: "MG-02", units: 12, uom: "carton" },
-    { id: "R-03", skuId: "MG-03", units: 16, uom: "carton" },
-    { id: "R-04", skuId: "MG-04", units: 3, uom: "carton" },
-    { id: "R-05", skuId: "MG-05", units: 10, uom: "carton" },
-    { id: "R-06", skuId: "MG-06", units: 6, uom: "carton" },
-    { id: "R-07", skuId: "MG-07", units: 8, uom: "carton" },
-    { id: "R-08", skuId: "MG-08", units: 6, uom: "carton" },
-    { id: "R-09", skuId: "MG-09", units: 9, uom: "carton" },
-    { id: "R-10", skuId: "MG-10", units: 4, uom: "carton" },
-    { id: "R-11", skuId: "MG-11", units: 2, uom: "carton" },
-    { id: "R-12", skuId: "MG-12", units: 2, uom: "carton" },
-    { id: "R-13", skuId: "MG-13", units: 2, uom: "carton" },
-    { id: "R-14", skuId: "MG-14", units: 3, uom: "carton" },
-    { id: "R-15", skuId: "MG-15", units: 9, uom: "case" },
-    { id: "R-16", skuId: "MG-16", units: 2, uom: "carton" },
-    { id: "R-17", skuId: "MG-17", units: 5, uom: "carton" },
-    { id: "R-18", skuId: "MG-18", units: 7, uom: "carton" },
-    { id: "R-19", skuId: "MG-19", units: 4, uom: "carton" },
-    { id: "R-20", skuId: "MG-20", units: 12, uom: "carton" },
-    { id: "R-21", skuId: "MG-21", units: 2, uom: "carton" },
-    { id: "R-22", skuId: "MG-22", units: 18, uom: "carton" },
-    { id: "R-23", skuId: "MG-23", units: 9, uom: "case" },
-    { id: "R-24", skuId: "MG-24", units: 2, uom: "carton" },
-    { id: "R-25", skuId: "MG-25", units: 2, uom: "carton" },
-    { id: "R-26", skuId: "MG-26", units: 2, uom: "carton" },
-    { id: "R-27", skuId: "MG-27", units: 2, uom: "carton" },
-    { id: "R-28", skuId: "MG-28", units: 1, uom: "carton" },
-    { id: "R-29", skuId: "MG-29", units: 1, uom: "carton" },
-    { id: "R-30", skuId: "MG-30", units: 3, uom: "carton" },
-  ],
-  bands: { aCutoff: 90, bCutoff: 30 },
-  weights: {
-    goldenWeight: 0.5,
-    lowWeight: 0.05,
-    affinityWeight: 0.2,
-    affinityDecayBays: 3,
-    ergoGolden: 1,
-    ergoFloor: 1.15,
-    ergoBeam: 1.35,
-    heavyKg: 12,
-    maxLevelForHeavy: 1,
-  },
-  forward: {
-    onHand: {
-      "MG-01": 42, "MG-02": 36, "MG-03": 33, "MG-04": 31, "MG-05": 34,
-      "MG-06": 30, "MG-07": 30, "MG-08": 30,
-      "MG-09": 9, "MG-10": 14, "MG-11": 12, "MG-12": 12, "MG-13": 12,
-      "MG-14": 13, "MG-15": 11, "MG-16": 12, "MG-17": 12, "MG-18": 12,
-      "MG-19": 5, "MG-20": 7, "MG-21": 6, "MG-22": 4, "MG-23": 6,
-      "MG-24": 6, "MG-25": 6, "MG-26": 6, "MG-27": 6, "MG-28": 6,
-      "MG-29": 6, "MG-30": 2,
-    },
-    thresholds: {
-      A: { minCartons: 30, maxCartons: 72, hysteresisCartons: 12 },
-      B: { minCartons: 12, maxCartons: 30, hysteresisCartons: 6 },
-      C: { minCartons: 6, maxCartons: 15, hysteresisCartons: 3 },
-    },
-    openings: [{ skuId: "MG-06", cartons: -8 }],
-  },
-  startState: {
-    "G-01-L2": { skuId: "MG-01", cartons: 20 },
-    "G-01-L3": { skuId: "MG-02", cartons: 40 },
-    "H-01-L2": { skuId: "MG-03", cartons: 40 },
-    "F-01-L2": { skuId: "MG-05", cartons: 12 },
-    "F-02-L2": { skuId: "MG-04", cartons: 4 },
-    "G-02-L2": { skuId: "MG-07", cartons: 8 },
-    "H-01-L3": { skuId: "MG-18", cartons: 6 },
-    "F-02-L1": { skuId: "MG-11", cartons: 3 },
-    "G-03-L1": { skuId: "MG-12", cartons: 3 },
-    "F-04-L1": { skuId: "MG-13", cartons: 2 },
-    "G-05-L1": { skuId: "MG-16", cartons: 2 },
-    "H-05-L1": { skuId: "MG-21", cartons: 1 },
-    "F-06-L1": { skuId: "MG-27", cartons: 1 },
-    "H-02-L1": { skuId: "MG-25", cartons: 1 },
-  },
-  seed: 1998,
+  id: dayJson.id,
+  name: dayJson.name,
+  slots: buildReserveSlots(),
+  skus: dayJson.skus.map((sku) => ({
+    id: sku.id,
+    name: sku.name,
+    picks: sku.picksPerDay,
+    cubeLiters: sku.cubeLiters,
+    weightKg: sku.weightKg,
+  })),
+  affinities: dayJson.affinities.map((edge) => ({ a: edge.skuA, b: edge.skuB, strength: edge.strength })),
+  uoms: dayJson.uoms,
+  receipts: dayJson.receipts,
+  bands: dayJson.bands,
+  weights: dayJson.weights,
+  forward: dayJson.forward,
+  startState: dayJson.startState,
+  seed: dayJson.seed,
 }

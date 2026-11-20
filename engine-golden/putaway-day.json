@@ -1,0 +1,1392 @@
+{
+  "dayId": "putaway-day",
+  "dayName": "Harbor & Lane day 07",
+  "outcomes": [
+    {
+      "policy": "velocity",
+      "directives": [
+        {
+          "receiptId": "R-01",
+          "skuId": "MG-01",
+          "skuName": "Blue tin coffee",
+          "band": "A",
+          "destination": "reserve",
+          "units": 8,
+          "uom": "carton",
+          "cartons": 8,
+          "slotId": "F-01-L3",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-02",
+          "skuId": "MG-02",
+          "skuName": "Paper sleeve filters",
+          "band": "A",
+          "destination": "reserve",
+          "units": 12,
+          "uom": "carton",
+          "cartons": 12,
+          "slotId": "F-02-L3",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-03",
+          "skuId": "MG-03",
+          "skuName": "Matchbox cloves",
+          "band": "A",
+          "destination": "reserve",
+          "units": 16,
+          "uom": "carton",
+          "cartons": 16,
+          "slotId": "F-03-L2",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-04",
+          "skuId": "MG-04",
+          "skuName": "Rye cracker crates",
+          "band": "A",
+          "destination": "reserve",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "F-02-L2",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-05",
+          "skuId": "MG-05",
+          "skuName": "Fennel salt tins",
+          "band": "A",
+          "destination": "reserve",
+          "units": 10,
+          "uom": "carton",
+          "cartons": 10,
+          "slotId": "F-01-L2",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-06",
+          "skuId": "MG-06",
+          "skuName": "Peppercorn drums",
+          "band": "A",
+          "destination": "forward",
+          "units": 6,
+          "uom": "carton",
+          "cartons": 6,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-07",
+          "skuId": "MG-07",
+          "skuName": "Cedar soap bars",
+          "band": "A",
+          "destination": "reserve",
+          "units": 8,
+          "uom": "carton",
+          "cartons": 8,
+          "slotId": "F-03-L3",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-08",
+          "skuId": "MG-08",
+          "skuName": "Lemon oil vials",
+          "band": "A",
+          "destination": "reserve",
+          "units": 6,
+          "uom": "carton",
+          "cartons": 6,
+          "slotId": "G-02-L3",
+          "putawayMeters": 21.4
+        },
+        {
+          "receiptId": "R-09",
+          "skuId": "MG-09",
+          "skuName": "Honeycomb wraps",
+          "band": "B",
+          "destination": "forward",
+          "units": 9,
+          "uom": "carton",
+          "cartons": 9,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-10",
+          "skuId": "MG-10",
+          "skuName": "Linen tea towels",
+          "band": "B",
+          "destination": "reserve",
+          "units": 4,
+          "uom": "carton",
+          "cartons": 4,
+          "slotId": "F-01-L1",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-11",
+          "skuId": "MG-11",
+          "skuName": "River oat sacks",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-02-L1",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-12",
+          "skuId": "MG-12",
+          "skuName": "White bean sacks",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-01-L1",
+          "putawayMeters": 18.4
+        },
+        {
+          "receiptId": "R-13",
+          "skuId": "MG-13",
+          "skuName": "Cask vinegar jugs",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-03-L1",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-14",
+          "skuId": "MG-14",
+          "skuName": "Birch syrup bottles",
+          "band": "B",
+          "destination": "reserve",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "F-01-L4",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-15",
+          "skuId": "MG-15",
+          "skuName": "Pilot candle tins",
+          "band": "B",
+          "destination": "forward",
+          "units": 9,
+          "uom": "case",
+          "cartons": 19,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-15",
+          "skuId": "MG-15",
+          "skuName": "Pilot candle tins",
+          "band": "B",
+          "destination": "reserve",
+          "units": 9,
+          "uom": "case",
+          "cartons": 17,
+          "slotId": "F-04-L2",
+          "putawayMeters": 23.8
+        },
+        {
+          "receiptId": "R-16",
+          "skuId": "MG-16",
+          "skuName": "Glass lamp oil",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-02-L1",
+          "putawayMeters": 21.4
+        },
+        {
+          "receiptId": "R-17",
+          "skuId": "MG-17",
+          "skuName": "Citrus peel jars",
+          "band": "B",
+          "destination": "reserve",
+          "units": 5,
+          "uom": "carton",
+          "cartons": 5,
+          "slotId": "F-04-L3",
+          "putawayMeters": 23.8
+        },
+        {
+          "receiptId": "R-18",
+          "skuId": "MG-18",
+          "skuName": "Ash wood spoons",
+          "band": "B",
+          "destination": "reserve",
+          "units": 7,
+          "uom": "carton",
+          "cartons": 7,
+          "slotId": "H-01-L3",
+          "putawayMeters": 22
+        },
+        {
+          "receiptId": "R-19",
+          "skuId": "MG-19",
+          "skuName": "Wool dryer balls",
+          "band": "C",
+          "destination": "forward",
+          "units": 4,
+          "uom": "carton",
+          "cartons": 4,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-20",
+          "skuId": "MG-20",
+          "skuName": "Copper measuring cups",
+          "band": "C",
+          "destination": "reserve",
+          "units": 12,
+          "uom": "carton",
+          "cartons": 12,
+          "slotId": "F-02-L4",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-21",
+          "skuId": "MG-21",
+          "skuName": "Millet grain bags",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-01-L1",
+          "putawayMeters": 22
+        },
+        {
+          "receiptId": "R-22",
+          "skuId": "MG-22",
+          "skuName": "Ink bottle black",
+          "band": "C",
+          "destination": "forward",
+          "units": 18,
+          "uom": "carton",
+          "cartons": 11,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-22",
+          "skuId": "MG-22",
+          "skuName": "Ink bottle black",
+          "band": "C",
+          "destination": "reserve",
+          "units": 18,
+          "uom": "carton",
+          "cartons": 7,
+          "slotId": "G-01-L4",
+          "putawayMeters": 18.4
+        },
+        {
+          "receiptId": "R-23",
+          "skuId": "MG-23",
+          "skuName": "Night chalk sticks",
+          "band": "C",
+          "destination": "reserve",
+          "units": 9,
+          "uom": "case",
+          "cartons": 36,
+          "slotId": "G-02-L4",
+          "putawayMeters": 21.4
+        },
+        {
+          "receiptId": "R-24",
+          "skuId": "MG-24",
+          "skuName": "Canvas mailers",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-03-L4",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-25",
+          "skuId": "MG-25",
+          "skuName": "Iron pan blanks",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-02-L1",
+          "putawayMeters": 25
+        },
+        {
+          "receiptId": "R-26",
+          "skuId": "MG-26",
+          "skuName": "Clay planter saucers",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-05-L1",
+          "putawayMeters": 26.8
+        },
+        {
+          "receiptId": "R-27",
+          "skuId": "MG-27",
+          "skuName": "Stone mortar",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-04-L1",
+          "putawayMeters": 27.4
+        },
+        {
+          "receiptId": "R-28",
+          "skuId": "MG-28",
+          "skuName": "Folding crate lids",
+          "band": "C",
+          "destination": "reserve",
+          "units": 1,
+          "uom": "carton",
+          "cartons": 1,
+          "slotId": "H-01-L4",
+          "putawayMeters": 22
+        },
+        {
+          "receiptId": "R-29",
+          "skuId": "MG-29",
+          "skuName": "Bolt of ticking cloth",
+          "band": "C",
+          "destination": "reserve",
+          "units": 1,
+          "uom": "carton",
+          "cartons": 1,
+          "slotId": "F-04-L4",
+          "putawayMeters": 23.8
+        },
+        {
+          "receiptId": "R-30",
+          "skuId": "MG-30",
+          "skuName": "Rain boot corks",
+          "band": "C",
+          "destination": "forward",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "",
+          "putawayMeters": 0
+        }
+      ],
+      "refusals": [],
+      "signals": [
+        {
+          "skuId": "MG-06",
+          "onHand": 22,
+          "action": "raise",
+          "cartons": 50
+        },
+        {
+          "skuId": "MG-09",
+          "onHand": 9,
+          "action": "raise",
+          "cartons": 21
+        },
+        {
+          "skuId": "MG-15",
+          "onHand": 11,
+          "action": "raise",
+          "cartons": 19
+        },
+        {
+          "skuId": "MG-19",
+          "onHand": 5,
+          "action": "raise",
+          "cartons": 10
+        },
+        {
+          "skuId": "MG-22",
+          "onHand": 4,
+          "action": "raise",
+          "cartons": 11
+        },
+        {
+          "skuId": "MG-30",
+          "onHand": 2,
+          "action": "raise",
+          "cartons": 13
+        },
+        {
+          "skuId": "MG-09",
+          "onHand": 18,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-15",
+          "onHand": 30,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-19",
+          "onHand": 9,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-22",
+          "onHand": 15,
+          "action": "quiet",
+          "cartons": 0
+        }
+      ],
+      "totals": {
+        "receipts": 30,
+        "refused": 0,
+        "cartons": 226,
+        "cartonsForward": 52,
+        "cartonsReserve": 174,
+        "goldenShare": 0.5287356321839081,
+        "putawayMeters": 531.2,
+        "baysTouched": 26
+      }
+    },
+    {
+      "policy": "affinity",
+      "directives": [
+        {
+          "receiptId": "R-01",
+          "skuId": "MG-01",
+          "skuName": "Blue tin coffee",
+          "band": "A",
+          "destination": "reserve",
+          "units": 8,
+          "uom": "carton",
+          "cartons": 8,
+          "slotId": "F-01-L3",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-02",
+          "skuId": "MG-02",
+          "skuName": "Paper sleeve filters",
+          "band": "A",
+          "destination": "reserve",
+          "units": 12,
+          "uom": "carton",
+          "cartons": 12,
+          "slotId": "F-01-L1",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-03",
+          "skuId": "MG-03",
+          "skuName": "Matchbox cloves",
+          "band": "A",
+          "destination": "reserve",
+          "units": 16,
+          "uom": "carton",
+          "cartons": 16,
+          "slotId": "F-02-L3",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-04",
+          "skuId": "MG-04",
+          "skuName": "Rye cracker crates",
+          "band": "A",
+          "destination": "reserve",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "F-02-L2",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-05",
+          "skuId": "MG-05",
+          "skuName": "Fennel salt tins",
+          "band": "A",
+          "destination": "reserve",
+          "units": 10,
+          "uom": "carton",
+          "cartons": 10,
+          "slotId": "F-01-L2",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-06",
+          "skuId": "MG-06",
+          "skuName": "Peppercorn drums",
+          "band": "A",
+          "destination": "forward",
+          "units": 6,
+          "uom": "carton",
+          "cartons": 6,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-07",
+          "skuId": "MG-07",
+          "skuName": "Cedar soap bars",
+          "band": "A",
+          "destination": "reserve",
+          "units": 8,
+          "uom": "carton",
+          "cartons": 8,
+          "slotId": "F-03-L2",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-08",
+          "skuId": "MG-08",
+          "skuName": "Lemon oil vials",
+          "band": "A",
+          "destination": "reserve",
+          "units": 6,
+          "uom": "carton",
+          "cartons": 6,
+          "slotId": "F-03-L3",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-09",
+          "skuId": "MG-09",
+          "skuName": "Honeycomb wraps",
+          "band": "B",
+          "destination": "forward",
+          "units": 9,
+          "uom": "carton",
+          "cartons": 9,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-10",
+          "skuId": "MG-10",
+          "skuName": "Linen tea towels",
+          "band": "B",
+          "destination": "reserve",
+          "units": 4,
+          "uom": "carton",
+          "cartons": 4,
+          "slotId": "F-03-L1",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-11",
+          "skuId": "MG-11",
+          "skuName": "River oat sacks",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-02-L1",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-12",
+          "skuId": "MG-12",
+          "skuName": "White bean sacks",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-01-L1",
+          "putawayMeters": 18.4
+        },
+        {
+          "receiptId": "R-13",
+          "skuId": "MG-13",
+          "skuName": "Cask vinegar jugs",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-02-L1",
+          "putawayMeters": 21.4
+        },
+        {
+          "receiptId": "R-14",
+          "skuId": "MG-14",
+          "skuName": "Birch syrup bottles",
+          "band": "B",
+          "destination": "reserve",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "F-01-L4",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-15",
+          "skuId": "MG-15",
+          "skuName": "Pilot candle tins",
+          "band": "B",
+          "destination": "forward",
+          "units": 9,
+          "uom": "case",
+          "cartons": 19,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-15",
+          "skuId": "MG-15",
+          "skuName": "Pilot candle tins",
+          "band": "B",
+          "destination": "reserve",
+          "units": 9,
+          "uom": "case",
+          "cartons": 17,
+          "slotId": "G-02-L3",
+          "putawayMeters": 21.4
+        },
+        {
+          "receiptId": "R-16",
+          "skuId": "MG-16",
+          "skuName": "Glass lamp oil",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-01-L1",
+          "putawayMeters": 22
+        },
+        {
+          "receiptId": "R-17",
+          "skuId": "MG-17",
+          "skuName": "Citrus peel jars",
+          "band": "B",
+          "destination": "reserve",
+          "units": 5,
+          "uom": "carton",
+          "cartons": 5,
+          "slotId": "F-02-L4",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-18",
+          "skuId": "MG-18",
+          "skuName": "Ash wood spoons",
+          "band": "B",
+          "destination": "reserve",
+          "units": 7,
+          "uom": "carton",
+          "cartons": 7,
+          "slotId": "H-01-L3",
+          "putawayMeters": 22
+        },
+        {
+          "receiptId": "R-19",
+          "skuId": "MG-19",
+          "skuName": "Wool dryer balls",
+          "band": "C",
+          "destination": "forward",
+          "units": 4,
+          "uom": "carton",
+          "cartons": 4,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-20",
+          "skuId": "MG-20",
+          "skuName": "Copper measuring cups",
+          "band": "C",
+          "destination": "reserve",
+          "units": 12,
+          "uom": "carton",
+          "cartons": 12,
+          "slotId": "G-01-L4",
+          "putawayMeters": 18.4
+        },
+        {
+          "receiptId": "R-21",
+          "skuId": "MG-21",
+          "skuName": "Millet grain bags",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-05-L1",
+          "putawayMeters": 26.8
+        },
+        {
+          "receiptId": "R-22",
+          "skuId": "MG-22",
+          "skuName": "Ink bottle black",
+          "band": "C",
+          "destination": "forward",
+          "units": 18,
+          "uom": "carton",
+          "cartons": 11,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-22",
+          "skuId": "MG-22",
+          "skuName": "Ink bottle black",
+          "band": "C",
+          "destination": "reserve",
+          "units": 18,
+          "uom": "carton",
+          "cartons": 7,
+          "slotId": "F-03-L4",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-23",
+          "skuId": "MG-23",
+          "skuName": "Night chalk sticks",
+          "band": "C",
+          "destination": "reserve",
+          "units": 9,
+          "uom": "case",
+          "cartons": 36,
+          "slotId": "G-02-L4",
+          "putawayMeters": 21.4
+        },
+        {
+          "receiptId": "R-24",
+          "skuId": "MG-24",
+          "skuName": "Canvas mailers",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-01-L4",
+          "putawayMeters": 22
+        },
+        {
+          "receiptId": "R-25",
+          "skuId": "MG-25",
+          "skuName": "Iron pan blanks",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-02-L1",
+          "putawayMeters": 25
+        },
+        {
+          "receiptId": "R-26",
+          "skuId": "MG-26",
+          "skuName": "Clay planter saucers",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-04-L1",
+          "putawayMeters": 27.4
+        },
+        {
+          "receiptId": "R-27",
+          "skuId": "MG-27",
+          "skuName": "Stone mortar",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-03-L1",
+          "putawayMeters": 28
+        },
+        {
+          "receiptId": "R-28",
+          "skuId": "MG-28",
+          "skuName": "Folding crate lids",
+          "band": "C",
+          "destination": "reserve",
+          "units": 1,
+          "uom": "carton",
+          "cartons": 1,
+          "slotId": "F-04-L4",
+          "putawayMeters": 23.8
+        },
+        {
+          "receiptId": "R-29",
+          "skuId": "MG-29",
+          "skuName": "Bolt of ticking cloth",
+          "band": "C",
+          "destination": "reserve",
+          "units": 1,
+          "uom": "carton",
+          "cartons": 1,
+          "slotId": "G-03-L4",
+          "putawayMeters": 24.4
+        },
+        {
+          "receiptId": "R-30",
+          "skuId": "MG-30",
+          "skuName": "Rain boot corks",
+          "band": "C",
+          "destination": "forward",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "",
+          "putawayMeters": 0
+        }
+      ],
+      "refusals": [],
+      "signals": [
+        {
+          "skuId": "MG-06",
+          "onHand": 22,
+          "action": "raise",
+          "cartons": 50
+        },
+        {
+          "skuId": "MG-09",
+          "onHand": 9,
+          "action": "raise",
+          "cartons": 21
+        },
+        {
+          "skuId": "MG-15",
+          "onHand": 11,
+          "action": "raise",
+          "cartons": 19
+        },
+        {
+          "skuId": "MG-19",
+          "onHand": 5,
+          "action": "raise",
+          "cartons": 10
+        },
+        {
+          "skuId": "MG-22",
+          "onHand": 4,
+          "action": "raise",
+          "cartons": 11
+        },
+        {
+          "skuId": "MG-30",
+          "onHand": 2,
+          "action": "raise",
+          "cartons": 13
+        },
+        {
+          "skuId": "MG-09",
+          "onHand": 18,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-15",
+          "onHand": 30,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-19",
+          "onHand": 9,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-22",
+          "onHand": 15,
+          "action": "quiet",
+          "cartons": 0
+        }
+      ],
+      "totals": {
+        "receipts": 30,
+        "refused": 0,
+        "cartons": 226,
+        "cartonsForward": 52,
+        "cartonsReserve": 174,
+        "goldenShare": 0.43103448275862066,
+        "putawayMeters": 536,
+        "baysTouched": 26
+      }
+    },
+    {
+      "policy": "random",
+      "directives": [
+        {
+          "receiptId": "R-01",
+          "skuId": "MG-01",
+          "skuName": "Blue tin coffee",
+          "band": "A",
+          "destination": "reserve",
+          "units": 8,
+          "uom": "carton",
+          "cartons": 8,
+          "slotId": "F-03-L4",
+          "putawayMeters": 20.8
+        },
+        {
+          "receiptId": "R-02",
+          "skuId": "MG-02",
+          "skuName": "Paper sleeve filters",
+          "band": "A",
+          "destination": "reserve",
+          "units": 12,
+          "uom": "carton",
+          "cartons": 12,
+          "slotId": "H-06-L2",
+          "putawayMeters": 37
+        },
+        {
+          "receiptId": "R-03",
+          "skuId": "MG-03",
+          "skuName": "Matchbox cloves",
+          "band": "A",
+          "destination": "reserve",
+          "units": 16,
+          "uom": "carton",
+          "cartons": 16,
+          "slotId": "G-02-L3",
+          "putawayMeters": 21.4
+        },
+        {
+          "receiptId": "R-04",
+          "skuId": "MG-04",
+          "skuName": "Rye cracker crates",
+          "band": "A",
+          "destination": "reserve",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "F-07-L3",
+          "putawayMeters": 32.8
+        },
+        {
+          "receiptId": "R-05",
+          "skuId": "MG-05",
+          "skuName": "Fennel salt tins",
+          "band": "A",
+          "destination": "reserve",
+          "units": 10,
+          "uom": "carton",
+          "cartons": 10,
+          "slotId": "H-04-L3",
+          "putawayMeters": 31
+        },
+        {
+          "receiptId": "R-06",
+          "skuId": "MG-06",
+          "skuName": "Peppercorn drums",
+          "band": "A",
+          "destination": "forward",
+          "units": 6,
+          "uom": "carton",
+          "cartons": 6,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-07",
+          "skuId": "MG-07",
+          "skuName": "Cedar soap bars",
+          "band": "A",
+          "destination": "reserve",
+          "units": 8,
+          "uom": "carton",
+          "cartons": 8,
+          "slotId": "G-05-L2",
+          "putawayMeters": 30.4
+        },
+        {
+          "receiptId": "R-08",
+          "skuId": "MG-08",
+          "skuName": "Lemon oil vials",
+          "band": "A",
+          "destination": "reserve",
+          "units": 6,
+          "uom": "carton",
+          "cartons": 6,
+          "slotId": "G-01-L1",
+          "putawayMeters": 18.4
+        },
+        {
+          "receiptId": "R-09",
+          "skuId": "MG-09",
+          "skuName": "Honeycomb wraps",
+          "band": "B",
+          "destination": "forward",
+          "units": 9,
+          "uom": "carton",
+          "cartons": 9,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-10",
+          "skuId": "MG-10",
+          "skuName": "Linen tea towels",
+          "band": "B",
+          "destination": "reserve",
+          "units": 4,
+          "uom": "carton",
+          "cartons": 4,
+          "slotId": "F-07-L4",
+          "putawayMeters": 32.8
+        },
+        {
+          "receiptId": "R-11",
+          "skuId": "MG-11",
+          "skuName": "River oat sacks",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-02-L1",
+          "putawayMeters": 17.8
+        },
+        {
+          "receiptId": "R-12",
+          "skuId": "MG-12",
+          "skuName": "White bean sacks",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-06-L1",
+          "putawayMeters": 33.4
+        },
+        {
+          "receiptId": "R-13",
+          "skuId": "MG-13",
+          "skuName": "Cask vinegar jugs",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "G-07-L1",
+          "putawayMeters": 36.4
+        },
+        {
+          "receiptId": "R-14",
+          "skuId": "MG-14",
+          "skuName": "Birch syrup bottles",
+          "band": "B",
+          "destination": "reserve",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "F-06-L4",
+          "putawayMeters": 29.799999999999997
+        },
+        {
+          "receiptId": "R-15",
+          "skuId": "MG-15",
+          "skuName": "Pilot candle tins",
+          "band": "B",
+          "destination": "forward",
+          "units": 9,
+          "uom": "case",
+          "cartons": 19,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-15",
+          "skuId": "MG-15",
+          "skuName": "Pilot candle tins",
+          "band": "B",
+          "destination": "reserve",
+          "units": 9,
+          "uom": "case",
+          "cartons": 17,
+          "slotId": "G-06-L4",
+          "putawayMeters": 33.4
+        },
+        {
+          "receiptId": "R-16",
+          "skuId": "MG-16",
+          "skuName": "Glass lamp oil",
+          "band": "B",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-04-L1",
+          "putawayMeters": 31
+        },
+        {
+          "receiptId": "R-17",
+          "skuId": "MG-17",
+          "skuName": "Citrus peel jars",
+          "band": "B",
+          "destination": "reserve",
+          "units": 5,
+          "uom": "carton",
+          "cartons": 5,
+          "slotId": "F-05-L2",
+          "putawayMeters": 26.8
+        },
+        {
+          "receiptId": "R-18",
+          "skuId": "MG-18",
+          "skuName": "Ash wood spoons",
+          "band": "B",
+          "destination": "reserve",
+          "units": 7,
+          "uom": "carton",
+          "cartons": 7,
+          "slotId": "H-06-L3",
+          "putawayMeters": 37
+        },
+        {
+          "receiptId": "R-19",
+          "skuId": "MG-19",
+          "skuName": "Wool dryer balls",
+          "band": "C",
+          "destination": "forward",
+          "units": 4,
+          "uom": "carton",
+          "cartons": 4,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-20",
+          "skuId": "MG-20",
+          "skuName": "Copper measuring cups",
+          "band": "C",
+          "destination": "reserve",
+          "units": 12,
+          "uom": "carton",
+          "cartons": 12,
+          "slotId": "G-03-L2",
+          "putawayMeters": 24.4
+        },
+        {
+          "receiptId": "R-21",
+          "skuId": "MG-21",
+          "skuName": "Millet grain bags",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-01-L1",
+          "putawayMeters": 14.8
+        },
+        {
+          "receiptId": "R-22",
+          "skuId": "MG-22",
+          "skuName": "Ink bottle black",
+          "band": "C",
+          "destination": "forward",
+          "units": 18,
+          "uom": "carton",
+          "cartons": 11,
+          "slotId": "",
+          "putawayMeters": 0
+        },
+        {
+          "receiptId": "R-22",
+          "skuId": "MG-22",
+          "skuName": "Ink bottle black",
+          "band": "C",
+          "destination": "reserve",
+          "units": 18,
+          "uom": "carton",
+          "cartons": 7,
+          "slotId": "F-05-L3",
+          "putawayMeters": 26.8
+        },
+        {
+          "receiptId": "R-23",
+          "skuId": "MG-23",
+          "skuName": "Night chalk sticks",
+          "band": "C",
+          "destination": "reserve",
+          "units": 9,
+          "uom": "case",
+          "cartons": 36,
+          "slotId": "H-04-L2",
+          "putawayMeters": 31
+        },
+        {
+          "receiptId": "R-24",
+          "skuId": "MG-24",
+          "skuName": "Canvas mailers",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-03-L3",
+          "putawayMeters": 28
+        },
+        {
+          "receiptId": "R-25",
+          "skuId": "MG-25",
+          "skuName": "Iron pan blanks",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "H-01-L1",
+          "putawayMeters": 22
+        },
+        {
+          "receiptId": "R-26",
+          "skuId": "MG-26",
+          "skuName": "Clay planter saucers",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-08-L1",
+          "putawayMeters": 35.8
+        },
+        {
+          "receiptId": "R-27",
+          "skuId": "MG-27",
+          "skuName": "Stone mortar",
+          "band": "C",
+          "destination": "reserve",
+          "units": 2,
+          "uom": "carton",
+          "cartons": 2,
+          "slotId": "F-06-L1",
+          "putawayMeters": 29.799999999999997
+        },
+        {
+          "receiptId": "R-28",
+          "skuId": "MG-28",
+          "skuName": "Folding crate lids",
+          "band": "C",
+          "destination": "reserve",
+          "units": 1,
+          "uom": "carton",
+          "cartons": 1,
+          "slotId": "G-04-L4",
+          "putawayMeters": 27.4
+        },
+        {
+          "receiptId": "R-29",
+          "skuId": "MG-29",
+          "skuName": "Bolt of ticking cloth",
+          "band": "C",
+          "destination": "reserve",
+          "units": 1,
+          "uom": "carton",
+          "cartons": 1,
+          "slotId": "F-06-L2",
+          "putawayMeters": 29.799999999999997
+        },
+        {
+          "receiptId": "R-30",
+          "skuId": "MG-30",
+          "skuName": "Rain boot corks",
+          "band": "C",
+          "destination": "forward",
+          "units": 3,
+          "uom": "carton",
+          "cartons": 3,
+          "slotId": "",
+          "putawayMeters": 0
+        }
+      ],
+      "refusals": [],
+      "signals": [
+        {
+          "skuId": "MG-06",
+          "onHand": 22,
+          "action": "raise",
+          "cartons": 50
+        },
+        {
+          "skuId": "MG-09",
+          "onHand": 9,
+          "action": "raise",
+          "cartons": 21
+        },
+        {
+          "skuId": "MG-15",
+          "onHand": 11,
+          "action": "raise",
+          "cartons": 19
+        },
+        {
+          "skuId": "MG-19",
+          "onHand": 5,
+          "action": "raise",
+          "cartons": 10
+        },
+        {
+          "skuId": "MG-22",
+          "onHand": 4,
+          "action": "raise",
+          "cartons": 11
+        },
+        {
+          "skuId": "MG-30",
+          "onHand": 2,
+          "action": "raise",
+          "cartons": 13
+        },
+        {
+          "skuId": "MG-09",
+          "onHand": 18,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-15",
+          "onHand": 30,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-19",
+          "onHand": 9,
+          "action": "quiet",
+          "cartons": 0
+        },
+        {
+          "skuId": "MG-22",
+          "onHand": 15,
+          "action": "quiet",
+          "cartons": 0
+        }
+      ],
+      "totals": {
+        "receipts": 30,
+        "refused": 0,
+        "cartons": 226,
+        "cartonsForward": 52,
+        "cartonsReserve": 174,
+        "goldenShare": 0.6839080459770115,
+        "putawayMeters": 739.9999999999998,
+        "baysTouched": 26
+      }
+    }
+  ]
+}

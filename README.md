@@ -37,7 +37,21 @@ It then subtracts a pull toward cartons already sitting nearby that leave on the
 
 ## The dock
 
-[Aisle F–H](/putaway) is the reserve rack behind the face: one day of receipts, 226 cartons, directed by three policies — a velocity skim, an affinity pull, and a seeded random fork to measure the other two against. The page re-runs the same day the [engine](https://github.com/SukrutN/quay-engine) ships as `fixtures/putaway-day.json`, and its figures are locked to the engine's output by tests.
+[Aisle F–H](/putaway) is the reserve rack behind the face: one day of receipts, 226 cartons, directed by three policies — a velocity skim, an affinity pull, and a seeded random fork to measure the other two against. The page re-runs the same day the engine ships as `engine/fixtures/putaway-day.json`, and its figures are locked to the engine's own printed reading by tests.
+
+## The engine
+
+The slotting service lives in this repository at [`engine/`](engine/) — the Java build behind the notebook, carried over from the old `quay-engine` repository with its full history. The site reads the engine's published fixtures instead of carrying hand-copied numbers, and the dock page's figures are locked in one chain, inside one CI run:
+
+1. the engine prints its reading for the day — `java -jar engine/cli/target/quay.jar putaway engine/fixtures/putaway-day.json --json`
+2. that reading is stored as `engine-golden/putaway-day.json` — `node scripts/golden.mjs regen`
+3. the site's tests replay the day through the TypeScript port and must match the golden copy figure for figure
+
+A change on either side that moves a number fails the build.
+
+```bash
+mvn -B -f engine verify        # the engine's own tests
+```
 
 ## What is fictional
 
