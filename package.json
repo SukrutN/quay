@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --hostname :: --port 24641",
     "lint": "eslint",
-    "test": "tsx --test src/lib/place.test.ts src/lib/putaway.test.ts"
+    "test": "tsx --test src/lib/place.test.ts src/lib/putaway.test.ts src/lib/engine-lock.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
