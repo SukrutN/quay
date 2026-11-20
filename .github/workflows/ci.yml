@@ -1,0 +1,45 @@
+# One repo, one chain of custody: engine tests, the engine's printed golden,
+# the site's port against that golden, then lint and the production build.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: engine + site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Install (locked)
+        run: npm ci
+
+      - name: Engine (tests + jar)
+        run: mvn -B -f engine verify
+
+      - name: Golden freshness (the engine's reading vs engine-golden/)
+        run: node scripts/golden.mjs check
+
+      - name: Figure lock (the port vs engine-golden/)
+        run: npm test
+
+      - name: Lint (zero errors)
+        run: npm run lint
+
+      - name: Build (production, TypeScript included)
+        run: npm run build
