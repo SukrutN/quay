@@ -5,6 +5,7 @@ import dev.quay.slotting.PutawayRejection;
 import dev.quay.slotting.app.FixtureLibrary;
 import dev.quay.slotting.app.PutawayLibrary;
 import dev.quay.slotting.app.PutawayReading;
+import dev.quay.slotting.app.PutawayReport;
 import dev.quay.slotting.app.Reading;
 import dev.quay.slotting.app.RunPutaway;
 import dev.quay.slotting.app.SlotFace;
@@ -13,7 +14,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/** `quay place <face.json>` and `quay putaway <day.json>` print the plans a planner can check. */
+/** `quay place <face.json>` and `quay putaway <day.json>` print the plans a planner can check;
+ * `quay putaway <day.json> --json` prints the reading a machine can store. */
 public final class QuayCommand {
 
     private QuayCommand() {}
@@ -31,7 +33,10 @@ public final class QuayCommand {
             return place(args[1], out, err);
         }
         if (args.length == 2 && "putaway".equals(args[0])) {
-            return putaway(args[1], out, err);
+            return putaway(args[1], out, err, false);
+        }
+        if (args.length == 3 && "putaway".equals(args[0]) && "--json".equals(args[2])) {
+            return putaway(args[1], out, err, true);
         }
         usage(err);
         return 2;
@@ -50,14 +55,15 @@ public final class QuayCommand {
         }
     }
 
-    private static int putaway(String arg, PrintStream out, PrintStream err) {
+    private static int putaway(String arg, PrintStream out, PrintStream err, boolean json) {
         Path path = Path.of(arg);
         if (!Files.isRegularFile(path)) {
             err.println("Could not read " + path);
             return 2;
         }
         try {
-            out.print(PutawayReading.text(new RunPutaway().day(PutawayLibrary.read(path))));
+            PutawayReport report = new RunPutaway().day(PutawayLibrary.read(path));
+            out.print(json ? PutawayReading.json(report) : PutawayReading.text(report));
             return 0;
         } catch (PutawayRejection rejection) {
             err.println(rejection.getMessage());
@@ -69,6 +75,6 @@ public final class QuayCommand {
     }
 
     private static void usage(PrintStream stream) {
-        stream.println("usage: quay place <face.json> | quay putaway <day.json>");
+        stream.println("usage: quay place <face.json> | quay putaway <day.json> [--json]");
     }
 }

@@ -1,10 +1,17 @@
 package dev.quay.slotting.app;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Locale;
 
 /** The reading a planner checks on the dock door. Rounding lives here; the API keeps full precision. */
 public final class PutawayReading {
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private PutawayReading() {}
 
@@ -18,6 +25,65 @@ public final class PutawayReading {
         }
         comparison(out, report);
         return out.toString();
+    }
+
+    /**
+     * The reading a machine can check: every figure full precision, and no
+     * clock. The site stores this output as its golden copy and locks its
+     * port against it, so nothing that varies run to run may enter it.
+     */
+    public static String json(PutawayReport report) {
+        ObjectNode root = MAPPER.createObjectNode();
+        root.put("dayId", report.dayId());
+        root.put("dayName", report.dayName());
+        ArrayNode outcomes = root.putArray("outcomes");
+        for (PutawayReport.Outcome outcome : report.outcomes()) {
+            ObjectNode node = outcomes.addObject();
+            node.put("policy", outcome.policy());
+            ArrayNode directives = node.putArray("directives");
+            for (PutawayReport.DirectiveRow row : outcome.directives()) {
+                ObjectNode directive = directives.addObject();
+                directive.put("receiptId", row.receiptId());
+                directive.put("skuId", row.skuId());
+                directive.put("skuName", row.skuName());
+                directive.put("band", row.band());
+                directive.put("destination", row.destination());
+                directive.put("units", row.units());
+                directive.put("uom", row.uom());
+                directive.put("cartons", row.cartons());
+                directive.put("slotId", row.slotId());
+                directive.put("putawayMeters", row.putawayMeters());
+            }
+            ArrayNode refusals = node.putArray("refusals");
+            for (PutawayReport.RefusalRow row : outcome.refusals()) {
+                ObjectNode refusal = refusals.addObject();
+                refusal.put("receiptId", row.receiptId());
+                refusal.put("reason", row.reason());
+            }
+            ArrayNode signals = node.putArray("signals");
+            for (PutawayReport.SignalRow row : outcome.signals()) {
+                ObjectNode signal = signals.addObject();
+                signal.put("skuId", row.skuId());
+                signal.put("onHand", row.onHand());
+                signal.put("action", row.action());
+                signal.put("cartons", row.cartons());
+            }
+            PutawayReport.Totals totals = outcome.totals();
+            ObjectNode total = node.putObject("totals");
+            total.put("receipts", totals.receipts());
+            total.put("refused", totals.refused());
+            total.put("cartons", totals.cartons());
+            total.put("cartonsForward", totals.cartonsForward());
+            total.put("cartonsReserve", totals.cartonsReserve());
+            total.put("goldenShare", totals.goldenShare());
+            total.put("putawayMeters", totals.putawayMeters());
+            total.put("baysTouched", totals.baysTouched());
+        }
+        try {
+            return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(root) + "\n";
+        } catch (JsonProcessingException exception) {
+            throw new UncheckedIOException(exception);
+        }
     }
 
     private static void section(StringBuilder out, PutawayReport.Outcome outcome) {

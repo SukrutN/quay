@@ -1,9 +1,12 @@
 package dev.quay.slotting.app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.quay.slotting.PutawayDay;
 import dev.quay.slotting.PutawayPolicy;
 import dev.quay.slotting.PutawayRejection;
@@ -127,6 +130,30 @@ class PutawayBehaviorTest {
     }
 
     @Test
+    void theJsonReadingCarriesEveryFigureAtFullPrecision() throws IOException {
+        String json = PutawayReading.json(new RunPutaway().day(library.get("putaway-day")));
+        JsonNode root = new ObjectMapper().readTree(json);
+
+        assertEquals("putaway-day", root.get("dayId").asText());
+        assertEquals("Harbor & Lane day 07", root.get("dayName").asText());
+        assertFalse(root.has("elapsedMillis"), "the clock must not enter a reading a machine stores");
+
+        assertEquals(3, root.get("outcomes").size());
+        JsonNode velocity = outcome(root, "velocity");
+        assertEquals(531.2, velocity.get("totals").get("putawayMeters").asDouble(), 1.0e-9);
+        assertEquals(0.5287356321839081, velocity.get("totals").get("goldenShare").asDouble(), 1.0e-9);
+        assertEquals(32, velocity.get("directives").size());
+        assertEquals("F-01-L3", velocity.get("directives").get(0).get("slotId").asText());
+        assertEquals(14.8, velocity.get("directives").get(0).get("putawayMeters").asDouble(), 1.0e-9);
+        assertEquals("MG-06", velocity.get("signals").get(0).get("skuId").asText());
+        assertEquals(22.0, velocity.get("signals").get(0).get("onHand").asDouble(), 1.0e-9);
+        assertEquals(0, velocity.get("refusals").size());
+
+        assertEquals(536.0, outcome(root, "affinity").get("totals").get("putawayMeters").asDouble(), 1.0e-9);
+        assertEquals(740.0, outcome(root, "random").get("totals").get("putawayMeters").asDouble(), 1.0e-9);
+    }
+
+    @Test
     void anUnknownDayIdRefusesTheFetch() {
         UnknownDay unknown = assertThrows(UnknownDay.class, () -> library.get("no-such-day"));
         assertEquals("no-such-day", unknown.dayId());
@@ -188,6 +215,15 @@ class PutawayBehaviorTest {
         PutawayRejection rejection = assertThrows(PutawayRejection.class, () -> PutawayJson.read(json));
         assertTrue(rejection.reasons().stream().anyMatch(reason -> reason.contains("Peppercorn drums") && reason.contains("below zero")),
                 rejection.reasons().toString());
+    }
+
+    private static JsonNode outcome(JsonNode root, String policy) {
+        for (JsonNode node : root.get("outcomes")) {
+            if (policy.equals(node.get("policy").asText())) {
+                return node;
+            }
+        }
+        throw new AssertionError("no " + policy + " outcome in the reading");
     }
 
     private static void assertRow(
