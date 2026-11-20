@@ -195,7 +195,7 @@ export function FloorStudio() {
             </p>
           ) : (
             <p className="mt-8 max-w-3xl text-xl tracking-[-0.03em] text-silver sm:text-2xl">
-              The arrived face still has the fast tins on the far beam. Place the floor to read a different house.
+              The arrived layout still has the fast tins on the far beam. Run the placement to see the alternative.
             </p>
           )}
 

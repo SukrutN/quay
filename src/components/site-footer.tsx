@@ -7,8 +7,9 @@ export function SiteFooter() {
         <div>
           <p className="text-3xl tracking-[-0.04em]">Quay</p>
           <p className="mt-3 max-w-sm text-silver">
-            A slotting notebook for one fictional forward face. The extract is invented. Nothing here is a customer, a port, or a measured building.
+            A slotting demo for a fictional pick face. The data is invented; the math is not.
           </p>
+          <p className="mt-3 text-sm text-silver">Built by Sukrut Nadigotti</p>
         </div>
         <div>
           <p className="font-mono text-[11px] tracking-[0.16em] text-silver uppercase">House</p>

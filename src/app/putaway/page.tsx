@@ -188,7 +188,7 @@ export default function PutawayPage() {
 
         <section className="px-5 py-16 sm:px-8 lg:px-12">
           <h2 className="max-w-3xl text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] tracking-[-0.04em]">
-            One day, three directors.
+            The same day, run three ways.
           </h2>
           <div className="mt-10 grid gap-px border border-white/10 bg-white/10 lg:grid-cols-3">
             {panels.map((panel) => (
@@ -208,8 +208,8 @@ export default function PutawayPage() {
             </p>
             <p className="text-silver">
               Affinity against velocity: +{meters(speeds[1] - speeds[0])} m to pull partners together, and the
-              golden-band share drops to {(together.totals.goldenShare * 100).toFixed(0)}%. The pull is visible; the price
-              is printed next to it.
+              golden-band share drops to {(together.totals.goldenShare * 100).toFixed(0)}%. The pull is visible, and the
+              price is printed right next to it.
             </p>
           </div>
         </section>
@@ -321,7 +321,8 @@ export default function PutawayPage() {
             The walk, compared.
           </h2>
           <p className="mt-4 max-w-2xl text-silver">
-            Putaway meters are one-way dock-to-bay. The fork pays full price; direction discounts the day.
+            Putaway meters are one-way, dock to bay. The fork pays full price for every bay; the directed policies do
+            not.
           </p>
           <div className="mt-10 max-w-4xl space-y-6">
             {panels.map((panel, index) => (
@@ -384,15 +385,15 @@ export default function PutawayPage() {
             })}
           </div>
           <p className="mt-6 max-w-2xl text-silver">
-            {armedSkuIds.size ? [...armedSkuIds].join(" and ") : "Nothing"} leave{armedSkuIds.size === 1 ? "s" : ""} the day
-            still armed, quiet needs not just the minimum, but the minimum plus hysteresis, and the day
-            can&apos;t always buy that.
+            {armedSkuIds.size ? [...armedSkuIds].join(" and ") : "Nothing"} end{armedSkuIds.size === 1 ? "s" : ""} the day
+            still short: a line settles only at the minimum plus hysteresis, and this day&apos;s receipts do not always
+            cover it.
           </p>
         </section>
 
         <section className="border-t border-white/10 px-5 py-16 sm:px-8 lg:px-12">
           <h2 className="max-w-3xl text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] tracking-[-0.04em]">
-            Five lines, read aloud.
+            Five lines in detail.
           </h2>
           <p className="mt-4 max-w-2xl text-silver">
             The directives the engine prints, a few of them at length. Split lines, case conversion, beam refusals, and a
@@ -417,7 +418,8 @@ export default function PutawayPage() {
             What the day refuses.
           </h2>
           <p className="mt-4 max-w-2xl text-silver">
-            Zero refusals today, the rack had room. The checks ran anyway, and they are why the ending state adds up:
+            Zero refusals today — the rack had room. The checks still ran on every line, and they are why the ending
+            state adds up:
           </p>
           <ul className="mt-8 max-w-3xl space-y-3 text-silver">
             <li>
@@ -441,11 +443,11 @@ export default function PutawayPage() {
         </section>
 
         <section className="border-t border-white/10 px-5 py-16 sm:px-8 lg:px-12">
-          <h2 className="max-w-3xl text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] tracking-[-0.04em]">Lineage.</h2>
+          <h2 className="max-w-3xl text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] tracking-[-0.04em]">Sources.</h2>
           <p className="mt-4 max-w-2xl text-silver">
-            The three policies are the classic trio the slotting literature compares, dedicated placement by velocity,
+            The three policies are the classic trio the slotting literature compares: dedicated placement by velocity,
             correlated placement by affinity, and a randomized control. The corridor cost model, the band premiums, and
-            the forward-pick thresholds are all textbook fare.
+            the forward-pick thresholds all come straight from the textbooks.
           </p>
           <ul className="mt-8 max-w-3xl space-y-2 text-silver">
             <li>van den Berg, 1999, a literature survey of storage and assignment planning.</li>
@@ -454,8 +456,8 @@ export default function PutawayPage() {
             <li>Bartholdi &amp; Hackman. <span className="italic">Warehouse &amp; Distribution Science</span>, the open textbook.</li>
           </ul>
           <p className="mt-8 max-w-2xl text-silver">
-            The extract is invented. The face these aisles feed is <Link href="/floor" className="text-paper underline decoration-white/20 underline-offset-4 hover:text-signal">the floor</Link>, and the
-            score that prices it <Link href="/#method" className="text-paper underline decoration-white/20 underline-offset-4 hover:text-signal">the method</Link>.
+            The warehouse is fictional. The face these aisles feed is <Link href="/floor" className="text-paper underline decoration-white/20 underline-offset-4 hover:text-signal">the floor</Link>, and the
+            scoring behind it is <Link href="/#method" className="text-paper underline decoration-white/20 underline-offset-4 hover:text-signal">the method</Link>.
           </p>
         </section>
       </main>

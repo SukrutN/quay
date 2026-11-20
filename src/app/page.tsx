@@ -47,7 +47,7 @@ const NOTES = [
     n: "03",
     title: "The south dock",
     meta: "Return walk",
-    body: "Every estimate is out and back, once per pick line. Quay does not pretend to know a batched route.",
+    body: "Walks are counted out and back to the south dock, once per pick line. No batched routing.",
   },
   {
     n: "04",
@@ -79,7 +79,8 @@ export default function HomePage() {
           </h1>
           <div className="rise-late flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <p className="max-w-xl text-lg leading-snug text-silver sm:text-xl">
-              Marrow Goods is invented. House 4 is not a building you can visit. Quay still treats its forward face seriously: thirty cartons, five aisles, and a south dock, re-slotted in the browser.
+              Quay is a slotting demo for a fictional pick face: thirty cartons, five aisles, and a south dock,
+              re-slotted in the browser. Marrow Goods and House 4 are invented. The math is not.
             </p>
             <div className="flex flex-wrap items-center gap-5">
               <Link href="/floor" className={buttonVariants({ size: "lg" })}>
@@ -99,7 +100,8 @@ export default function HomePage() {
                 A picker should spend the hour on the order, not on the aisle. Quay reads a small forward face and proposes where each carton should stand.
               </p>
               <p className="mt-8 max-w-xl text-silver">
-                The sample is deliberately clumsy at the start. Fast tins sit far from the dock. Heavy sacks have been allowed onto the beam. The proposal is a heuristic you can inspect, not a claim that the floor is solved.
+                The starting layout is deliberately clumsy: fast tins sit far from the dock, and heavy sacks are up on
+                the beam. The proposal is a heuristic you can inspect, not a claim that the floor is solved.
               </p>
             </div>
             <div>
@@ -119,9 +121,9 @@ export default function HomePage() {
         <section id="method" className="border-t border-white/10 px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
           <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
             <h2 className="max-w-3xl text-[clamp(2.6rem,6vw,5.4rem)] leading-[0.9] tracking-[-0.045em]">
-              Four pressures,
+              How a bay
               <br />
-              one bay.
+              is scored.
             </h2>
             <p className="max-w-sm text-silver">
               Quay does not hand the nearest hole to the fastest carton and stop. Each open bay is scored, and the carton takes the lowest score.
@@ -146,9 +148,9 @@ export default function HomePage() {
         <section className="border-t border-white/10 px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
           <p className="font-mono text-[11px] tracking-[0.18em] text-silver uppercase">Floor notes</p>
           <h2 className="mt-4 max-w-4xl text-[clamp(2.6rem,6vw,5.4rem)] leading-[0.9] tracking-[-0.045em]">
-            What the sample
+            What you&apos;re
             <br />
-            is willing to show.
+            looking at.
           </h2>
           <ul className="mt-12">
             {NOTES.map((note) => (
@@ -168,9 +170,9 @@ export default function HomePage() {
         <section className="border-t border-white/10 px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
           <p className="font-mono text-[11px] tracking-[0.18em] text-signal uppercase">House 4 is loaded</p>
           <h2 className="mt-4 max-w-4xl text-[clamp(3rem,8vw,7rem)] leading-[0.86] tracking-[-0.05em]">
-            The face
+            See for
             <br />
-            is waiting.
+            yourself.
           </h2>
           <p className="mt-6 max-w-lg text-lg text-silver">
             Open the floor, place it, and click a bay. The before and after stay on the page so you can argue with the score.
