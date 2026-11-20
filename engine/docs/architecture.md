@@ -26,6 +26,8 @@ A face document is the whole input. The placement is a function of that document
 
 Putaway answers share the same shape. `RunPutaway` times the three policies over one day document; the report carries directives, refusals, the replenish signal trace, and per-policy totals. The policies live in the domain (`PutawayCore` with `PutawayPolicy`), the day parsing in the application (`PutawayJson`, `PutawayLibrary` over the published fixtures), and [docs/putaway.md](putaway.md) records the format. The random fork replays `java.util.Random` exactly so the plan survives the port to the site.
 
-## Why the showcase site is a separate repository
+## Why the engine lives under the site
 
 The site is a visual walkthrough of one fictional floor. This service is the calculator you point at other floors: different racks, explicit slot lists, zones, locks, and incumbent layouts. The site's on-screen percentages are that presentation. They are not a contract of this solver.
+
+The two used to be separate repositories; the engine now lives at `engine/` in the site's repository, its full history carried over. The lock that the split made hard — figures copied between repositories by hand — is now a chain inside one build: the engine prints the day's reading in JSON (`putaway <day> --json`), that reading is stored as the site's golden copy, and the site's test suite replays the day through its TypeScript port and must match figure for figure. Nothing crosses a repository boundary by hand anymore.

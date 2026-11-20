@@ -3,7 +3,7 @@
 A putaway day is one document: the reserve rack, the SKU catalog, the manifest, the state of the forward face, and how the slots open the day. Point the CLI at it and the engine answers under three policies — velocity, affinity, and a seeded random fork the first two are measured against.
 
 ```bash
-java -jar cli/target/quay.jar putaway fixtures/putaway-day.json
+java -jar engine/cli/target/quay.jar putaway engine/fixtures/putaway-day.json
 ```
 
 The worked example is `fixtures/putaway-day.json` — Harbor & Lane, day 07: thirty receipt lines, 226 cartons, three aisles. Everything in it is invented.
