@@ -13,7 +13,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -289,6 +291,81 @@ class QuayServerTest {
                 "{\"fixture\":\"forward-pick\",\"csv\":" + mapper.writeValueAsString(csv) + "}");
         assertEquals(400, response.statusCode());
         assertTrue(mapper.readTree(response.body()).get("reasons").toString().contains("case column"));
+    }
+
+    @Test
+    void theLaneMigratesFromItsCurrentLayoutToAHandTarget() throws Exception {
+        // LN-01 takes the empty golden slot; the plan is one move
+        HttpResponse<String> response = send("POST", "/v1/migrate",
+                "{\"fixture\":\"lane\",\"target\":{\"LN-01\":\"A-01-L2\"}}");
+        assertEquals(200, response.statusCode());
+        JsonNode body = mapper.readTree(response.body());
+        assertEquals("lane", body.get("faceId").asText());
+        assertEquals(1, body.get("moves").asInt());
+        assertEquals(0, body.get("bufferedMoves").asInt());
+        assertEquals("LN-01", body.get("steps").get(0).get("skuId").asText());
+        assertEquals("B-02-L1", body.get("steps").get(0).get("from").asText());
+        assertEquals("A-01-L2", body.get("steps").get(0).get("to").asText());
+        assertTrue(body.get("laborMinutes").asDouble() > 2);
+        assertTrue(body.get("notes").get(0).asText().contains("proxy"));
+    }
+
+    @Test
+    void theLaneProposalMigratesThroughItsOwnTarget() throws Exception {
+        // run the slotter on the lane, then migrate to its own proposal:
+        // the plan must reach the proposal exactly and never move the lock
+        JsonNode slotting = mapper.readTree(send("POST", "/v1/slotting",
+                "{\"fixture\":\"lane\"}").body());
+        Map<String, String> target = new LinkedHashMap<>();
+        for (JsonNode row : slotting.get("proposal").get("assignment")) {
+            target.put(row.get("skuId").asText(), row.get("slotId").asText());
+        }
+
+        HttpResponse<String> response = send("POST", "/v1/migrate",
+                "{\"fixture\":\"lane\",\"target\":" + mapper.writeValueAsString(target) + "}");
+        assertEquals(200, response.statusCode());
+        JsonNode body = mapper.readTree(response.body());
+        for (JsonNode step : body.get("steps")) {
+            assertTrue(!step.get("skuId").asText().equals("LN-03"), "the locked SKU must not move");
+        }
+        // replay the plan against the current layout and compare the end state
+        Map<String, String> current = new LinkedHashMap<>(Map.of(
+                "B-02-L1", "LN-01", "B-01-L1", "LN-02", "A-01-L1", "LN-03", "A-03-L2", "LN-04"));
+        for (JsonNode step : body.get("steps")) {
+            String sku = current.remove(step.get("from").asText());
+            assertEquals(step.get("skuId").asText(), sku);
+            current.put(step.get("to").asText(), sku);
+        }
+        assertEquals(target, invert(current));
+    }
+
+    @Test
+    void aMigrationThatMovesALockIsRefused() throws Exception {
+        HttpResponse<String> response = send("POST", "/v1/migrate",
+                "{\"fixture\":\"lane\",\"target\":{\"LN-03\":\"A-01-L2\"}}");
+        assertEquals(400, response.statusCode());
+        assertTrue(mapper.readTree(response.body()).get("reasons").toString().contains("locked"));
+    }
+
+    @Test
+    void aSwapLoopPlansThroughAStage() throws Exception {
+        // LN-01 and LN-02 want each other's slots
+        HttpResponse<String> response = send("POST", "/v1/migrate",
+                "{\"fixture\":\"lane\",\"target\":{\"LN-01\":\"B-01-L1\",\"LN-02\":\"B-02-L1\"}}");
+        assertEquals(200, response.statusCode());
+        JsonNode body = mapper.readTree(response.body());
+        assertEquals(3, body.get("moves").asInt());
+        assertEquals(1, body.get("bufferedMoves").asInt());
+        assertTrue(body.get("steps").get(0).get("buffered").asBoolean());
+        assertTrue(body.get("notes").toString().contains("to break a loop"));
+    }
+
+    private static Map<String, String> invert(Map<String, String> slotToSku) {
+        Map<String, String> skuToSlot = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : slotToSku.entrySet()) {
+            skuToSlot.put(entry.getValue(), entry.getKey());
+        }
+        return skuToSlot;
     }
 
     @Test

@@ -273,6 +273,13 @@
         <summary>The layout that arrived with the document</summary>
         <div id="face-current-assignment"></div>
       </details>
+      <div id="migration-wrap" hidden style="margin-top: 24px;">
+        <p class="eyebrow"><span class="key">Re-slot migration</span> · <span id="migration-summary"></span></p>
+        <div class="cards" id="migration-cards"></div>
+        <div id="migration-steps"></div>
+        <div id="migration-notes" style="margin-top: 10px;"></div>
+      </div>
+      <button class="btn" id="migrate" hidden style="margin-top: 24px;">Plan the migration from the current layout</button>
     </section>
 
     <!-- Putaway result -->
@@ -601,6 +608,92 @@
     const m1 = (n) => Number(n).toFixed(1);
     const pct = (n) => (100 * n).toFixed(0) + "%";
 
+    // --- Migration: the staged move plan from the current layout to the proposal. ---
+
+    async function planMigration(slotting) {
+      // the target is the proposal's own assignment, skuId -> slotId
+      const target = {};
+      for (const row of slotting.proposal.assignment) {
+        target[row.skuId] = row.slotId;
+      }
+
+      // the source is whatever ran: the selected fixture, or the pasted document
+      let body;
+      const value = $("source").value;
+      if (value === "paste") {
+        const text = $("paste").value.trim();
+        try {
+          body = { face: JSON.parse(text), target };
+        } catch {
+          showFault("urn:workbench:invalid-json", "The document is not valid JSON", "Correct the text in the document area, then plan the migration again.");
+          return;
+        }
+      } else if (value) {
+        body = { fixture: value.slice("fixture:".length), target };
+      } else {
+        showFault("urn:workbench:no-document", "No document selected", "Run the engine on a document that carries a current layout, then plan the migration.");
+        return;
+      }
+
+      const button = $("migrate");
+      const label = button.textContent;
+      button.disabled = true;
+      button.textContent = "Planning";
+      hide($("fault"));
+      try {
+        const headers = { "content-type": "application/json" };
+        const token = sessionStorage.getItem("quay-token");
+        if (token) headers.authorization = "Bearer " + token;
+        let response;
+        try {
+          response = await fetch("/v1/migrate", {
+            method: "POST",
+            headers,
+            body: JSON.stringify(body),
+          });
+        } catch {
+          showFault("urn:workbench:unreachable", "The engine did not answer", "The API is not reachable at this address. Confirm the service is running and try again.");
+          return;
+        }
+        let payload;
+        try {
+          payload = await response.json();
+        } catch {
+          showFault("urn:workbench:bad-response", "The engine returned an unreadable response", "Try again, or check the service logs.");
+          return;
+        }
+        if (handleRefusal(response, payload)) return;
+        renderMigration(payload);
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    }
+
+    function renderMigration(plan) {
+      $("migration-summary").textContent =
+        plan.moves + " move" + (plan.moves === 1 ? "" : "s") +
+        (plan.bufferedMoves ? ", " + plan.bufferedMoves + " staged through an empty slot" : "") +
+        " · " + m1(plan.laborMinutes) + " labor minutes";
+      $("migration-cards").innerHTML =
+        "<div class='card'><p class='tag'>Moves</p><div class='row'><span class='k'>" + plan.moves + "</span></div></div>" +
+        "<div class='card'><p class='tag'>Staged</p><div class='row'><span class='k'>" + plan.bufferedMoves + "</span></div></div>" +
+        "<div class='card'><p class='tag'>Labor (proxy)</p><div class='row'><span class='k'>" + m1(plan.laborMinutes) + " min</span></div></div>";
+      const rows = plan.steps.map((step) =>
+        "<tr><td class='num'>" + step.step + "</td>" +
+        "<td class='mono'>" + esc(step.skuId) + "<span class='sub'>" + esc(step.skuName) + "</span></td>" +
+        "<td class='mono'>" + esc(step.from) + " → " + esc(step.to) + "</td>" +
+        "<td class='num'>" + m1(step.minutes) + " min</td>" +
+        "<td>" + (step.buffered ? "<span class='tag'>staged</span>" : "") + esc(step.note) + "</td></tr>").join("");
+      $("migration-steps").innerHTML =
+        "<div class='table-scroll'><table><thead><tr><th class='num'>step</th><th>carton</th><th>move</th><th class='num'>minutes</th><th>note</th></tr></thead><tbody>" +
+        rows + "</tbody></table></div>";
+      $("migration-notes").innerHTML = (plan.notes || [])
+        .map((note) => "<p class='file-note'>" + esc(note) + "</p>").join("");
+      $("migration-wrap").hidden = false;
+      $("migration-wrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     function renderFace(r) {
       $("face-name").textContent = r.faceName + " (" + r.faceId + ")";
       $("face-mode").textContent = "mode " + r.mode;
@@ -608,6 +701,16 @@
 
       // A document may arrive without a layout to compare against.
       const hasIncumbent = r.comparison !== null && r.current !== null;
+      // The migration needs a current layout to move from; without one the
+      // button stays hidden and the section stays empty.
+      const migrateBtn = $("migrate");
+      if (hasIncumbent && r.proposal.assignment.length > 0) {
+        migrateBtn.hidden = false;
+        migrateBtn.onclick = () => planMigration(r);
+      } else {
+        migrateBtn.hidden = true;
+      }
+      $("migration-wrap").hidden = true;
       if (hasIncumbent) {
         const cut = Math.round(100 * r.comparison.travelReduction);
         $("face-headline").innerHTML =

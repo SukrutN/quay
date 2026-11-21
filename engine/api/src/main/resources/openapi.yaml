@@ -127,6 +127,47 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /v1/migrate:
+    post:
+      operationId: migrate
+      description: |
+        Plans the staged move sequence from the face's current layout to a
+        target assignment (skuId to slotId, the shape the slotting report's
+        proposal carries). The steps are ordered so no slot is ever
+        double-booked: a carton only moves when its target slot is empty at
+        that moment, and loops of mutually blocking targets are broken
+        through an empty slot, reported as staged moves. Locked SKUs refuse
+        to move, and contradictory targets are refused in words. The labor
+        figure is a stated proxy: one dock-to-dock trip per move at a
+        walking pace plus fixed handling, two trips for a staged move.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fixture:
+                  type: string
+                face:
+                  type: object
+                target:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        "200":
+          description: The ordered move plan with its labor figure and notes.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The target is unreadable, moves a locked SKU, contradicts itself, or the loop cannot be broken.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /v1/putaway:
     post:
       operationId: putaway

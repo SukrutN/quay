@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.quay.slotting.FaceRejection;
+import dev.quay.slotting.Migration;
 import dev.quay.slotting.PickFace;
 import dev.quay.slotting.PutawayDay;
 import dev.quay.slotting.PutawayRejection;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -168,6 +170,56 @@ public final class QuayServer {
                 PutawayJson.parse(outcome.document());
                 ctx.json(Map.of("kind", kind, "report", outcome.report().toJson(), "day", outcome.document()));
             }
+        });
+        app.post("/v1/migrate", ctx -> {
+            JsonNode body = readBody(ctx, Set.of("fixture", "face", "target"));
+            boolean named = body.hasNonNull("fixture");
+            boolean inline = body.has("face");
+            if (named && inline) {
+                throw new FaceRejection(List.of("Name a fixture or send a face document, not both."));
+            }
+            if (!named && !inline) {
+                throw new FaceRejection(List.of("Name a fixture or send a face document."));
+            }
+            PickFace face;
+            if (named) {
+                JsonNode fixture = body.get("fixture");
+                if (!fixture.isTextual()) {
+                    throw new FaceRejection(List.of("fixture must be a string."));
+                }
+                face = library.get(fixture.asText());
+            } else {
+                JsonNode document = body.get("face");
+                if (!document.isObject()) {
+                    throw new FaceRejection(List.of("face must be an object."));
+                }
+                face = FaceJson.parse(document);
+            }
+            JsonNode targetNode = body.get("target");
+            if (targetNode == null || !targetNode.isObject() || targetNode.isEmpty()) {
+                throw new FaceRejection(List.of(
+                        "Send the target as an object of skuId to slotId, such as the slotting report's proposal."));
+            }
+            Map<String, String> target = new LinkedHashMap<>();
+            Iterator<Map.Entry<String, JsonNode>> fields = targetNode.fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> field = fields.next();
+                if (!field.getValue().isTextual()) {
+                    throw new FaceRejection(List.of(
+                            "The target for " + field.getKey() + " must be a slot id string."));
+                }
+                target.put(field.getKey(), field.getValue().asText());
+            }
+            Migration.Plan plan = Migration.plan(face, target);
+            shell.slottingRun();
+            ctx.json(Map.of(
+                    "faceId", face.id(),
+                    "faceName", face.name(),
+                    "moves", plan.moves(),
+                    "bufferedMoves", plan.bufferedMoves(),
+                    "laborMinutes", plan.laborMinutes(),
+                    "steps", plan.steps(),
+                    "notes", plan.notes()));
         });
         return app;
     }

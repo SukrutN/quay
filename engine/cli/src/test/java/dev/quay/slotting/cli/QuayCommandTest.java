@@ -39,6 +39,72 @@ class QuayCommandTest {
     }
 
     @Test
+    void migratePrintsTheStagedMovePlanForTheLaneProposal() throws Exception {
+        Path lane = Files.createTempFile("lane", ".json");
+        try (InputStream input = QuayCommandTest.class.getResourceAsStream("/fixtures/lane.json")) {
+            Files.copy(input, lane, StandardCopyOption.REPLACE_EXISTING);
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        int code = QuayCommand.run(
+                new String[] {"migrate", lane.toString()},
+                new PrintStream(out, true, StandardCharsets.UTF_8),
+                new PrintStream(err, true, StandardCharsets.UTF_8));
+        assertEquals(0, code);
+        String text = out.toString(StandardCharsets.UTF_8);
+        assertTrue(text.contains("migration for Lane chill corner"));
+        assertTrue(text.contains("labor minutes (proxy)"));
+        assertTrue(text.contains("LN-"));
+        // the locked stockpot never appears as a moving carton
+        assertTrue(!text.contains("LN-03 "));
+        assertTrue(text.contains("min"));
+        assertTrue(text.contains("proxy"));
+        assertEquals("", err.toString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void migrateRefusesAFaceWithNoCurrentLayout() throws Exception {
+        Path fresh = Files.createTempFile("fresh", ".json");
+        Files.writeString(fresh, """
+                {
+                  "id": "fresh",
+                  "name": "Fresh face",
+                  "rack": {
+                    "aisles": ["A"],
+                    "bays": [1, 2],
+                    "levels": [1, 2],
+                    "goldenLevels": [2],
+                    "floorLevel": 1,
+                    "wideBays": [],
+                    "wideMultiplier": 1.0,
+                    "cubeLitersByLevel": {"1": 40, "2": 24},
+                    "dockToFirstAisleMeters": 4.0,
+                    "aislePitchMeters": 3.6,
+                    "mouthToFirstBayMeters": 2.4,
+                    "bayPitchMeters": 2.5
+                  },
+                  "skus": [
+                    {"id": "FR-01", "name": "Fresh tin", "picksPerDay": 10, "cubeLiters": 4, "weightKg": 1}
+                  ],
+                  "policy": {
+                    "travelWeight": 1, "wasteWeight": 1, "affinityWeight": 0, "goldenWeight": 0,
+                    "lightFloorWeight": 0, "slowPickCutoff": 5, "lightKg": 2, "heavyKg": 12,
+                    "maxLevelForHeavy": 1, "ergoGolden": 1, "ergoFloor": 1.1, "ergoBeam": 1.3,
+                    "affinityDecayBays": 2, "maxPasses": 2
+                  }
+                }
+                """);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        int code = QuayCommand.run(
+                new String[] {"migrate", fresh.toString()},
+                new PrintStream(out, true, StandardCharsets.UTF_8),
+                new PrintStream(err, true, StandardCharsets.UTF_8));
+        assertEquals(2, code);
+        assertTrue(err.toString(StandardCharsets.UTF_8).contains("nothing to migrate from"));
+    }
+
+    @Test
     void putawayPrintsTheDayReading() throws Exception {
         Path day = Files.createTempFile("putaway-day", ".json");
         try (InputStream input = QuayCommandTest.class.getResourceAsStream("/fixtures/putaway-day.json")) {
