@@ -48,14 +48,14 @@ An unknown fixture name is HTTP 400 with `application/problem+json`. The body is
 
 ## Open the workbench
 
-The API jar serves a workbench page at its root — a browser tab for the engine, in the site's own clothes:
+The API jar serves a workbench page at its root, a browser interface for the engine:
 
 ```bash
 java -jar engine/api/target/quay-api.jar
 # then open http://127.0.0.1:8091/
 ```
 
-Pick a published fixture or paste your own face or day document, run it, and read the same numbers the CLI prints: the scorecards, the placement table, the policy comparison, the replenish trace. A refused document shows its problem document on the page, reasons and all. The page rides inside the jar — one binary, one tab, no build step, no dependencies.
+Select a published fixture or paste your own face or day document, run it, and read the same numbers the CLI prints: the scorecards, the placement table, the policy comparison, and the replenish trace. A rejected document shows its problem details on the page, with every reason listed. The page is served from inside the jar, with no build step and no dependencies.
 
 ## Where to read next
 

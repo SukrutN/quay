@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>quay · engine workbench</title>
+  <title>Quay engine workbench</title>
   <style>
-    /* The site's own tokens, hand-carried: deep, smoke, paper, silver, signal. */
+    /* Design tokens carried over from the website. */
     :root {
       --deep: #11120d;
       --smoke: #181914;
@@ -30,7 +30,7 @@
     .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
     @media (min-width: 640px) { .wrap { padding: 0 32px; } }
 
-    /* micro labels, the site's mono register */
+    /* Section labels in the site's monospace register. */
     .eyebrow {
       font-family: var(--mono);
       font-size: 11px;
@@ -55,7 +55,7 @@
     .health.up .dot { background: var(--signal); }
     .health.down .dot { background: var(--fault); }
 
-    /* mode tabs, after the site header's underline tabs */
+    /* Mode tabs. */
     .tabs { display: flex; gap: 24px; padding: 22px 0 0; }
     .tab {
       font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
@@ -64,14 +64,14 @@
     }
     .tab[aria-selected="true"] { color: var(--signal); border-bottom-color: var(--signal); }
 
-    /* the load panel */
+    /* The input panel. */
     .load {
       border: 1px solid var(--line); background: var(--smoke);
       padding: 20px; margin-top: 24px;
     }
     .load-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
     .field { display: flex; flex-direction: column; gap: 6px; min-width: 260px; flex: 1; }
-    select, textarea, input[type="text"] {
+    select, textarea {
       background: var(--deep); color: var(--paper);
       border: 1px solid var(--line-strong); border-radius: 2px;
       font-family: var(--mono); font-size: 13px; padding: 10px 12px; width: 100%;
@@ -84,18 +84,15 @@
       padding: 12px 22px; cursor: pointer; font-weight: 600;
     }
     .btn:disabled { opacity: 0.4; cursor: default; }
-    .btn.ghost {
-      background: none; color: var(--silver); border: 1px solid var(--line-strong); font-weight: 400;
-    }
     .file-note { font-family: var(--mono); font-size: 11px; color: var(--silver); letter-spacing: 0.06em; }
 
-    /* the refusal panel */
+    /* The rejection panel. */
     .fault { border: 1px solid rgba(255, 92, 77, 0.5); padding: 20px 24px; margin-top: 24px; display: none; }
     .fault .title { font-size: 22px; letter-spacing: -0.03em; margin: 6px 0 4px; }
     .fault .detail { color: var(--silver); max-width: 640px; }
     .fault ul { margin: 10px 0 0; padding-left: 18px; color: var(--fault); font-family: var(--mono); font-size: 13px; }
 
-    /* results */
+    /* Results. */
     .result { margin-top: 32px; display: none; }
     .headline { font-size: clamp(22px, 4vw, 34px); letter-spacing: -0.035em; line-height: 1.15; max-width: 820px; }
     .headline .up { color: var(--signal); }
@@ -132,7 +129,6 @@
       border: 1px solid var(--line-strong); border-radius: 2px; padding: 1px 8px; color: var(--silver);
     }
     .pill.gold { color: var(--signal); border-color: rgba(81, 224, 118, 0.4); }
-    .pill.fwd { color: var(--paper); }
 
     details { margin-top: 20px; }
     summary { cursor: pointer; color: var(--silver); font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
@@ -162,7 +158,7 @@
   <header>
     <div class="wrap bar">
       <p class="wordmark">Quay<span>.</span></p>
-      <p class="health" id="health"><span class="dot"></span>engine workbench</p>
+      <p class="health" id="health"><span class="dot"></span>Engine workbench</p>
     </div>
   </header>
 
@@ -172,33 +168,33 @@
       <button class="tab" id="tab-day" role="tab" aria-selected="false">Direct a putaway day</button>
     </div>
 
-    <section class="load" aria-label="load a document">
+    <section class="load" aria-label="Choose a document">
       <div class="load-row">
         <div class="field">
-          <label class="eyebrow" for="source"><span class="key">01</span> · load</label>
+          <label class="eyebrow" for="source">Document</label>
           <select id="source"></select>
         </div>
         <div class="field">
-          <label class="eyebrow" for="file"><span class="key">02</span> · or your own document</label>
+          <label class="eyebrow" for="file">Or upload a document</label>
           <input type="file" id="file" accept=".json,application/json" />
-          <p class="file-note">the file lands in the box below; edit it freely</p>
+          <p class="file-note">The contents will appear in the text area below, where you can edit them before running.</p>
         </div>
         <button class="btn" id="run">Run the engine</button>
       </div>
       <div class="field" id="paste-wrap" style="display: none; margin-top: 16px;">
-        <label class="eyebrow" for="paste"><span class="key">03</span> · the document</label>
-        <textarea id="paste" spellcheck="false" placeholder="paste a face or putaway-day document"></textarea>
+        <label class="eyebrow" for="paste">Document contents</label>
+        <textarea id="paste" spellcheck="false" placeholder="Paste the JSON document here."></textarea>
       </div>
     </section>
 
     <section class="fault" id="fault" role="alert">
-      <p class="eyebrow"><span class="key" style="color: var(--fault);">refused</span> · <span id="fault-type"></span></p>
+      <p class="eyebrow"><span class="key" style="color: var(--fault);">Request rejected</span> · <span id="fault-type"></span></p>
       <p class="title" id="fault-title"></p>
       <p class="detail" id="fault-detail"></p>
       <ul id="fault-reasons"></ul>
     </section>
 
-    <!-- face result -->
+    <!-- Face result -->
     <section class="result" id="face-result">
       <p class="eyebrow"><span class="key" id="face-name"></span> · <span id="face-mode"></span> · <span id="face-ms"></span></p>
       <p class="headline" id="face-headline"></p>
@@ -209,12 +205,12 @@
       <div class="bars" id="face-bars"></div>
       <div id="face-assignment"></div>
       <details>
-        <summary>the layout that arrived with the document</summary>
+        <summary>The layout that arrived with the document</summary>
         <div id="face-current-assignment"></div>
       </details>
     </section>
 
-    <!-- putaway result -->
+    <!-- Putaway result -->
     <section class="result" id="day-result">
       <p class="eyebrow"><span class="key" id="day-name"></span></p>
       <p class="headline" id="day-headline"></p>
@@ -227,20 +223,20 @@
 
   <footer>
     <div class="wrap bar">
-      <p class="mono-note">the same math the CLI prints, from the same jar · nothing is stored</p>
-      <p class="mono-note"><a href="/v1/openapi.yaml">the wire contract</a> · <a href="/health">health</a></p>
+      <p class="mono-note">This workbench runs the same engine as the command-line interface. No documents are stored.</p>
+      <p class="mono-note"><a href="/v1/openapi.yaml">OpenAPI specification</a> · <a href="/health">Service health</a></p>
     </div>
   </footer>
 
   <script>
     "use strict";
 
-    // Page state: which use case, which fixture list, which filter.
+    // Page state: the active use case, the fixture lists, the policy filter.
     const state = { mode: "face", faces: [], days: [], filter: "all" };
 
     const $ = (id) => document.getElementById(id);
 
-    // --- boot: health + the published fixture lists ---
+    // --- Boot: health check and the published fixture lists. ---
 
     fetch("/health")
       .then((r) => (r.ok ? r.json() : Promise.reject()))
@@ -255,16 +251,16 @@
         renderSource();
       });
 
-    // --- source picker: a published fixture, or paste your own document ---
+    // --- Source picker: a published fixture, or a pasted document. ---
 
     function renderSource() {
       const select = $("source");
       const names = state.mode === "face" ? state.faces : state.days;
-      const placeholder = state.mode === "face" ? "a published face" : "a published putaway day";
+      const placeholder = state.mode === "face" ? "Select a published face" : "Select a published putaway day";
       select.innerHTML = "";
-      select.add(new Option("— " + placeholder + " —", ""));
+      select.add(new Option(placeholder, ""));
       for (const name of names) select.add(new Option(name, "fixture:" + name));
-      select.add(new Option("— paste your own document —", "paste"));
+      select.add(new Option("Paste your own document", "paste"));
       select.value = "";
       $("paste-wrap").style.display = "none";
     }
@@ -285,7 +281,7 @@
       reader.readAsText(file);
     });
 
-    // --- mode tabs ---
+    // --- Mode tabs. ---
 
     function setMode(mode) {
       state.mode = mode;
@@ -296,7 +292,7 @@
     $("tab-face").addEventListener("click", () => setMode("face"));
     $("tab-day").addEventListener("click", () => setMode("day"));
 
-    // --- run: build the request body and POST it ---
+    // --- Run: build the request body and POST it. ---
 
     $("run").addEventListener("click", async () => {
       hide($("fault"));
@@ -307,19 +303,19 @@
       if (value === "paste") {
         const text = $("paste").value.trim();
         if (!text) {
-          showFault("urn:workbench:empty", "Nothing to run", "Pick a fixture or paste a document first.");
+          showFault("urn:workbench:no-document", "No document selected", "Select a published fixture or paste your own document, then run again.");
           return;
         }
         try {
           body = state.mode === "face" ? { face: JSON.parse(text) } : { day: JSON.parse(text) };
         } catch {
-          showFault("urn:workbench:not-json", "The document is not valid JSON", "Fix the text in the box and run again.");
+          showFault("urn:workbench:invalid-json", "The document is not valid JSON", "Correct the text and run again.");
           return;
         }
       } else if (value) {
         body = { fixture: value.slice("fixture:".length) };
       } else {
-        showFault("urn:workbench:empty", "Nothing to run", "Pick a fixture or paste a document first.");
+        showFault("urn:workbench:no-document", "No document selected", "Select a published fixture or paste your own document, then run again.");
         return;
       }
 
@@ -332,7 +328,7 @@
           body: JSON.stringify(body),
         });
       } catch {
-        showFault("urn:workbench:unreachable", "The engine did not answer", "The API jar is not reachable on this origin.");
+        showFault("urn:workbench:unreachable", "The engine did not answer", "The API is not reachable at this address. Confirm the service is running and try again.");
         return;
       }
       const payload = await response.json();
@@ -344,7 +340,7 @@
       else renderDay(payload);
     });
 
-    // --- rendering: the face reading ---
+    // --- Rendering: the face reading. ---
 
     const m1 = (n) => Number(n).toFixed(1);
     const pct = (n) => (100 * n).toFixed(0) + "%";
@@ -357,31 +353,31 @@
       $("face-headline").innerHTML =
         cut > 0
           ? "The proposal walks <span class='up'>" + cut + "% less</span> than the layout that arrived with the document."
-          : "The proposal does not beat the layout that arrived with the document.";
+          : "The proposal does not improve on the layout that arrived with the document.";
 
-      scorecard($("face-proposal"), "proposal", r.proposal, r.proposal.cost.total);
-      scorecard($("face-current"), "current", r.current, r.current.cost.total);
+      scorecard($("face-proposal"), "Proposal", r.proposal, r.proposal.cost.total);
+      scorecard($("face-current"), "Current", r.current, r.current.cost.total);
 
       const bars = $("face-bars");
       const max = Math.max(r.comparison.travelPickMetersBefore, r.comparison.travelPickMetersAfter);
       bars.innerHTML =
-        barRow("proposed", r.comparison.travelPickMetersAfter, max, false) +
-        barRow("current", r.comparison.travelPickMetersBefore, max, true);
+        barRow("Proposed", r.comparison.travelPickMetersAfter, max, false) +
+        barRow("Current", r.comparison.travelPickMetersBefore, max, true);
 
-      assignmentTable($("face-assignment"), r.proposal.assignment, "the proposal");
-      assignmentTable($("face-current-assignment"), r.current.assignment, "the current layout");
+      assignmentTable($("face-assignment"), r.proposal.assignment, "Proposal");
+      assignmentTable($("face-current-assignment"), r.current.assignment, "Current layout");
       show($("face-result"));
     }
 
     function scorecard(node, tag, side, objective) {
       node.innerHTML =
         "<p class='tag'>" + tag + "</p>" +
-        metric("travel", m1(side.metrics.travelPickMeters) + " pick-m") +
-        metric("golden share", pct(side.metrics.goldenPickShare)) +
-        metric("cube fit", pct(side.metrics.meanCubeFit)) +
-        metric("heavy above limit", String(side.metrics.heavyAboveLimit)) +
-        metric("affinity", m1(side.metrics.meanAffinitySteps) + " steps") +
-        metric("objective", m1(objective));
+        metric("Travel (pick-m)", m1(side.metrics.travelPickMeters)) +
+        metric("Golden-band share", pct(side.metrics.goldenPickShare)) +
+        metric("Mean cube fit", pct(side.metrics.meanCubeFit)) +
+        metric("Heavy above limit", String(side.metrics.heavyAboveLimit)) +
+        metric("Mean affinity (steps)", m1(side.metrics.meanAffinitySteps)) +
+        metric("Objective", m1(objective));
     }
 
     function metric(k, v) {
@@ -399,10 +395,10 @@
 
     function assignmentTable(node, rows, caption) {
       const head =
-        "<p class='eyebrow section-gap'><span class='key'>" + caption + "</span> · " + rows.length +
+        "<p class='eyebrow section-gap'><span class='key'>" + caption + "</span>: " + rows.length +
         " placements</p>" +
-        "<table><thead><tr><th>slot</th><th>carton</th><th>ergonomics</th><th>zone</th>" +
-        "<th class='num'>return m</th><th class='num'>cube fit</th></tr></thead><tbody>";
+        "<table><thead><tr><th>Slot</th><th>Carton</th><th>Ergonomics</th><th>Zone</th>" +
+        "<th class='num'>Return (m)</th><th class='num'>Cube fit</th></tr></thead><tbody>";
       const body = rows
         .slice()
         .sort((a, b) => a.slotId.localeCompare(b.slotId))
@@ -421,7 +417,7 @@
       return "<span class='pill" + (ergo === "golden" ? " gold" : "") + "'>" + ergo + "</span>";
     }
 
-    // --- rendering: the putaway reading ---
+    // --- Rendering: the putaway reading. ---
 
     function renderDay(r) {
       $("day-name").textContent = r.dayName + " (" + r.dayId + ")";
@@ -430,29 +426,29 @@
       const saved = fork.totals.putawayMeters - velocity.totals.putawayMeters;
       const percent = Math.round((100 * saved) / fork.totals.putawayMeters);
       $("day-headline").innerHTML =
-        "Direction walks <span class='up'>" + m1(saved) + " m less</span> than the fork — " +
-        percent + "% of the day's travel.";
+        "Directed putaway walks <span class='up'>" + m1(saved) + " m less</span> than the random fork, " +
+        "a saving of " + percent + "% of the day's travel.";
 
       const cards = $("day-cards");
       cards.innerHTML = r.outcomes
         .map(
           (o) =>
             "<div class='card'><p class='tag'>" + o.policy + "</p>" +
-            metric("putaway walk", m1(o.totals.putawayMeters) + " m") +
-            metric("golden share", pct(o.totals.goldenShare)) +
-            metric("to the face / reserve", o.totals.cartonsForward + " / " + o.totals.cartonsReserve) +
-            metric("bays touched", String(o.totals.baysTouched)) +
-            metric("refused", String(o.totals.refused)) + "</div>"
+            metric("Putaway walk", m1(o.totals.putawayMeters) + " m") +
+            metric("Golden-band share", pct(o.totals.goldenShare)) +
+            metric("Cartons to face / reserve", o.totals.cartonsForward + " / " + o.totals.cartonsReserve) +
+            metric("Bays touched", String(o.totals.baysTouched)) +
+            metric("Refused", String(o.totals.refused)) + "</div>"
         )
         .join("");
 
-      // The signal trace is identical under every policy; print it once.
+      // The signal trace is identical under every policy, so it is printed once.
       const signals = $("day-signals");
       const trace = velocity.signals;
       signals.innerHTML =
-        "<p class='eyebrow'><span class='key'>the replenish trace</span> · the same under every policy</p>" +
-        "<table class='signal-list'><thead><tr><th>sku</th><th class='num'>on hand</th><th>action</th>" +
-        "<th class='num'>asks</th></tr></thead><tbody>" +
+        "<p class='eyebrow'><span class='key'>Replenish trace</span> (identical under every policy)</p>" +
+        "<table class='signal-list'><thead><tr><th>SKU</th><th class='num'>On hand</th><th>Action</th>" +
+        "<th class='num'>Requested</th></tr></thead><tbody>" +
         trace
           .map(
             (s) =>
@@ -487,14 +483,15 @@
         if (wanted !== "all" && o.policy !== wanted) continue;
         for (const d of o.directives) rows.push({ policy: o.policy, d });
       }
+      const scope = wanted === "all" ? "" : ", " + wanted;
       const head =
-        "<p class='eyebrow section-gap'><span class='key'>directives</span> · " + rows.length +
-        " lines" + (wanted === "all" ? "" : " · " + wanted) + "</p>" +
-        "<table><thead><tr><th>policy</th><th>receipt</th><th>carton</th><th>goes to</th>" +
-        "<th class='num'>cartons</th><th class='num'>meters</th></tr></thead><tbody>";
+        "<p class='eyebrow section-gap'><span class='key'>Directives</span>: " + rows.length +
+        " lines" + scope + "</p>" +
+        "<table><thead><tr><th>Policy</th><th>Receipt</th><th>Carton</th><th>Destination</th>" +
+        "<th class='num'>Cartons</th><th class='num'>Distance (m)</th></tr></thead><tbody>";
       const body = rows
         .map(({ policy, d }) => {
-          const target = d.destination === "forward" ? "the face" : d.slotId;
+          const target = d.destination === "forward" ? "the forward face" : d.slotId;
           return (
             "<tr><td><span class='pill" + (policy === "velocity" ? " gold" : "") + "'>" + policy +
             "</span></td><td class='num'>" + d.receiptId + "</td><td>" + d.skuName +
@@ -506,11 +503,11 @@
       node.innerHTML = head + body + "</tbody></table>";
     }
 
-    // --- the refusal panel ---
+    // --- The rejection panel. ---
 
     function showFault(type, title, detail, reasons) {
       $("fault-type").textContent = type || "";
-      $("fault-title").textContent = title || "The engine refused the document";
+      $("fault-title").textContent = title || "The engine rejected the document";
       $("fault-detail").textContent = detail || "";
       $("fault-reasons").innerHTML = (reasons || []).map((r) => "<li>" + r + "</li>").join("");
       show($("fault"));
