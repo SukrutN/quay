@@ -7,6 +7,7 @@ import dev.quay.slotting.FaceRejection;
 import dev.quay.slotting.PickFace;
 import dev.quay.slotting.PutawayDay;
 import dev.quay.slotting.PutawayRejection;
+import dev.quay.slotting.app.CsvImport;
 import dev.quay.slotting.app.FaceJson;
 import dev.quay.slotting.app.FixtureLibrary;
 import dev.quay.slotting.app.PutawayJson;
@@ -125,7 +126,73 @@ public final class QuayServer {
             shell.putawayRun();
             ctx.json(report);
         });
+        app.post("/v1/import/skus", ctx -> {
+            JsonNode body = readBody(ctx, Set.of("fixture", "face", "day", "csv"));
+            if (body.hasNonNull("fixture") && (body.has("face") || body.has("day"))) {
+                throw new FaceRejection(List.of("Name a fixture or send a document, not both."));
+            }
+            String kind;
+            JsonNode source;
+            if (body.hasNonNull("fixture")) {
+                String fixture = body.get("fixture").asText();
+                JsonNode face = library.readDocument(fixture);
+                JsonNode day = putawayLibrary.readDocument(fixture);
+                if (face != null) {
+                    kind = "face";
+                    source = face;
+                } else if (day != null) {
+                    kind = "day";
+                    source = day;
+                } else {
+                    throw new UnknownFixture(fixture);
+                }
+            } else if (body.has("face")) {
+                kind = "face";
+                source = body.get("face");
+            } else if (body.has("day")) {
+                kind = "day";
+                source = body.get("day");
+            } else {
+                throw new FaceRejection(List.of("Name a fixture or send a face or a day document."));
+            }
+            if (!body.hasNonNull("csv") || !body.get("csv").isTextual() || body.get("csv").asText().isBlank()) {
+                throw new FaceRejection(List.of("Send the SKU master as a csv string."));
+            }
+            CsvImport.Outcome outcome = CsvImport.skus(source, kind, body.get("csv").asText());
+            // Prove the spliced document through the engine's own readers,
+            // so the importer cannot hand back something the run refuses.
+            if ("face".equals(kind)) {
+                FaceJson.parse(outcome.document());
+                ctx.json(Map.of("kind", kind, "report", outcome.report().toJson(), "face", outcome.document()));
+            } else {
+                PutawayJson.parse(outcome.document());
+                ctx.json(Map.of("kind", kind, "report", outcome.report().toJson(), "day", outcome.document()));
+            }
+        });
         return app;
+    }
+
+    private static JsonNode readBody(Context ctx, Set<String> allowed) {
+        if (ctx.body().isBlank()) {
+            throw new FaceRejection(List.of("Send a JSON object."));
+        }
+        JsonNode node;
+        try {
+            node = MAPPER.readTree(ctx.body());
+        } catch (JsonProcessingException exception) {
+            throw new FaceRejection(List.of("The request is not valid JSON."));
+        }
+        if (!node.isObject()) {
+            throw new FaceRejection(List.of("The request must be a JSON object."));
+        }
+        Iterator<String> names = node.fieldNames();
+        while (names.hasNext()) {
+            String name = names.next();
+            if (!allowed.contains(name)) {
+                throw new FaceRejection(List.of("Request has unknown field " + name + "."));
+            }
+        }
+        return node;
     }
 
     private static PickFace readRequest(Context ctx, FixtureLibrary library) {

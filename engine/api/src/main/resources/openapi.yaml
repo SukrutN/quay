@@ -86,6 +86,47 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /v1/import/skus:
+    post:
+      operationId: importSkus
+      description: |
+        Splices a SKU-master CSV into a face or a putaway-day document. The
+        CSV needs columns id, name, picksPerDay, cubeLiters, and weightKg,
+        with optional zone or case columns; the case column populates a day's
+        unit-of-master and is refused on a face. Rows the importer refuses
+        ride in the report with their line numbers and reasons, and every
+        reference the new master orphans (affinities, unit-of-master,
+        receipts, on-hand, openings, start states, assignments) is pruned
+        with the count carried in the report. The returned document is the
+        one the run endpoints accept.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fixture:
+                  type: string
+                face:
+                  type: object
+                day:
+                  type: object
+                csv:
+                  type: string
+      responses:
+        "200":
+          description: The report and the spliced document, ready to run.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The CSV is unreadable, the header is wrong, or the spliced document fails the engine's own rules.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /v1/putaway:
     post:
       operationId: putaway

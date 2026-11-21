@@ -234,6 +234,24 @@
       </div>
     </section>
 
+    <section class="load" aria-label="Import a SKU master">
+      <p class="eyebrow"><span class="key">Import a SKU master</span> · CSV</p>
+      <p class="file-note">
+        Paste a WMS-style export: columns id, name, picksPerDay, cubeLiters, and weightKg, with optional
+        zone or case columns. The importer splices the rows into the document selected above, prunes every
+        reference the new master orphans, and reports every row it refused. The spliced document lands in
+        the text area, ready to run.
+      </p>
+      <div class="load-row">
+        <div class="field" style="flex: 1; min-width: 260px;">
+          <label class="eyebrow" for="csv">CSV text</label>
+          <textarea id="csv" spellcheck="false" style="min-height: 120px" placeholder="id,name,picksPerDay,cubeLiters,weightKg&#10;MG-01,Blue tin coffee,240,4.2,1.6"></textarea>
+        </div>
+        <button class="btn" id="import">Import the CSV</button>
+      </div>
+      <div id="import-report" hidden style="margin-top: 16px;"></div>
+    </section>
+
     <section class="fault" id="fault" role="alert">
       <p class="eyebrow"><span class="key" style="color: var(--fault);">Request rejected</span> · <span id="fault-type"></span></p>
       <p class="title" id="fault-title"></p>
@@ -384,6 +402,112 @@
 
     $("run").addEventListener("click", () => run());
 
+    // --- Import: read a SKU master CSV, splice it into the working document. ---
+
+    $("import").addEventListener("click", () => runImport());
+
+    async function runImport() {
+      const button = $("import");
+      const label = button.textContent;
+      button.disabled = true;
+      button.textContent = "Importing";
+      hide($("import-report"));
+      hide($("fault"));
+      try {
+        await importOnce();
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    }
+
+    async function importOnce() {
+      const csv = $("csv").value;
+      if (!csv.trim()) {
+        showFault("urn:workbench:no-csv", "The CSV area is empty", "Paste the SKU master as CSV text, then import again.");
+        return;
+      }
+      // The splice needs the working document: the selected fixture, or the
+      // pasted one when the picker is in paste mode.
+      let body;
+      const value = $("source").value;
+      if (value === "paste") {
+        const text = $("paste").value.trim();
+        if (!text) {
+          showFault("urn:workbench:no-document", "No document selected", "The import needs a document to splice into. Select a published fixture or paste one, then import again.");
+          return;
+        }
+        try {
+          body = state.mode === "face" ? { face: JSON.parse(text) } : { day: JSON.parse(text) };
+        } catch {
+          showFault("urn:workbench:invalid-json", "The document is not valid JSON", "Correct the text in the document area, then import again.");
+          return;
+        }
+      } else if (value) {
+        body = { fixture: value.slice("fixture:".length) };
+      } else {
+        showFault("urn:workbench:no-document", "No document selected", "The import needs a document to splice into. Select a published fixture or paste one, then import again.");
+        return;
+      }
+      body.csv = csv;
+
+      const headers = { "content-type": "application/json" };
+      const token = sessionStorage.getItem("quay-token");
+      if (token) headers.authorization = "Bearer " + token;
+      let response;
+      try {
+        response = await fetch("/v1/import/skus", {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body),
+        });
+        $("health").classList.remove("down");
+        $("health").classList.add("up");
+      } catch {
+        $("health").classList.remove("up");
+        $("health").classList.add("down");
+        showFault("urn:workbench:unreachable", "The engine did not answer", "The API is not reachable at this address. Confirm the service is running and try again.");
+        return;
+      }
+      let payload;
+      try {
+        payload = await response.json();
+      } catch {
+        showFault("urn:workbench:bad-response", "The engine returned an unreadable response", "Try again, or check the service logs.");
+        return;
+      }
+      if (handleRefusal(response, payload)) return;
+      renderImportReport(payload);
+      // The spliced document lands in the paste area, ready to run.
+      $("paste").value = JSON.stringify(payload.face || payload.day, null, 2);
+      $("source").value = "paste";
+      $("paste-wrap").style.display = "block";
+    }
+
+    function renderImportReport(payload) {
+      const report = payload.report || {};
+      const rejectionRows = (report.rejections || []).map((rejection) =>
+        "<tr><td class='num'>" + esc(rejection.line) + "</td>" +
+        "<td class='mono'>" + esc(rejection.sku || "—") + "</td>" +
+        "<td>" + (rejection.reasons || []).map(esc).join(" ") + "</td></tr>").join("");
+      const pruned = Object.entries(report.pruned || {})
+        .map(([name, count]) => esc(name) + " " + esc(count)).join(", ");
+      const notes = (report.notes || []).map((note) => "<p class='file-note'>" + esc(note) + "</p>").join("");
+      $("import-report").hidden = false;
+      $("import-report").innerHTML =
+        "<p class='eyebrow'><span class='key'>Import report</span> · " +
+        esc(report.rowsAccepted) + " of " + esc(report.rowsRead) + " rows accepted" +
+        (report.rowsRejected ? " · " + esc(report.rowsRejected) + " refused" : "") +
+        " · a " + esc(payload.kind) + " document</p>" +
+        (rejectionRows
+          ? "<div class='table-scroll'><table><thead><tr><th class='num'>line</th><th>sku</th><th>reasons</th></tr></thead><tbody>" +
+            rejectionRows + "</tbody></table></div>"
+          : "") +
+        (pruned ? "<p class='file-note'>Pruned from the document, because the new master orphans them: " + pruned + ".</p>" : "") +
+        notes +
+        "<p class='file-note'>The spliced document is in the text area above. Run the engine when it looks right.</p>";
+    }
+
     // Show progress on the button and always restore it, whatever the outcome.
     async function run() {
       const button = $("run");
@@ -449,23 +573,29 @@
         showFault("urn:workbench:bad-response", "The engine returned an unreadable response", "Try again, or check the service logs.");
         return;
       }
-      if (!response.ok) {
-        if (response.status === 401) {
-          $("tokenSlot").hidden = false;
-          $("token").focus();
-          showFault(payload.type, "The engine asks for a token", "Paste the engine's token in the header above, then run the request again.");
-          return;
-        }
-        const retryAfter = response.headers.get("retry-after");
-        if (response.status === 429 && retryAfter) {
-          showFault(payload.type, payload.title, payload.detail + " Try again in " + retryAfter + " seconds.");
-          return;
-        }
-        showFault(payload.type, payload.title, payload.detail, payload.reasons);
-        return;
-      }
+      if (handleRefusal(response, payload)) return;
       if (state.mode === "face") renderFace(payload);
       else renderDay(payload);
+    }
+
+    // Every non-2xx answer goes through one door: the token ask, the rate
+    // limit's wait, and the engine's own refusals.
+    // Returns true when the fault has been shown.
+    function handleRefusal(response, payload) {
+      if (response.ok) return false;
+      if (response.status === 401) {
+        $("tokenSlot").hidden = false;
+        $("token").focus();
+        showFault("urn:workbench:token", "The engine asks for a token", "Paste the engine's token in the header above, then run the request again.");
+        return true;
+      }
+      const retryAfter = response.headers.get("retry-after");
+      if (response.status === 429 && retryAfter) {
+        showFault("urn:workbench:rate", "Too many requests", payload.detail + " Try again in " + retryAfter + " seconds.");
+        return true;
+      }
+      showFault(payload.type, payload.title, payload.detail, payload.reasons);
+      return true;
     }
 
     const m1 = (n) => Number(n).toFixed(1);

@@ -1,5 +1,7 @@
 package dev.quay.slotting.app;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.quay.slotting.PickFace;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,5 +79,22 @@ public final class FixtureLibrary {
     /** The published face ids, sorted, so a client can offer them without guessing. */
     public List<String> names() {
         return faces.keySet().stream().sorted().toList();
+    }
+
+    /**
+     * One published face's raw document, for callers that splice a document
+     * before reading it. Unknown names answer null; the caller names the
+     * refusal in its own words.
+     */
+    public JsonNode readDocument(String id) {
+        if (id == null || !ID.matcher(id).matches() || !faces.containsKey(id)) {
+            return null;
+        }
+        try (InputStream face = FixtureLibrary.class.getClassLoader()
+                .getResourceAsStream("fixtures/" + id + ".json")) {
+            return face == null ? null : new ObjectMapper().readTree(face);
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package dev.quay.slotting.app;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.quay.slotting.PutawayDay;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,5 +79,22 @@ public final class PutawayLibrary {
     /** The published day ids, sorted, so a client can offer them without guessing. */
     public List<String> names() {
         return days.keySet().stream().sorted().toList();
+    }
+
+    /**
+     * One published day's raw document, for callers that splice a document
+     * before reading it. Unknown names answer null; the caller names the
+     * refusal in its own words.
+     */
+    public JsonNode readDocument(String id) {
+        if (id == null || !ID.matcher(id).matches() || !days.containsKey(id)) {
+            return null;
+        }
+        try (InputStream day = PutawayLibrary.class.getClassLoader()
+                .getResourceAsStream("fixtures/" + id + ".json")) {
+            return day == null ? null : new ObjectMapper().readTree(day);
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
     }
 }

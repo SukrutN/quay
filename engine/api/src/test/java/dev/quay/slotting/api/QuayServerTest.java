@@ -225,6 +225,73 @@ class QuayServerTest {
     }
 
     @Test
+    void aSkuMasterImportsIntoTheForwardPickFixture() throws Exception {
+        String csv = "id,name,picksPerDay,cubeLiters,weightKg\n"
+                + "MG-01,Blue tin coffee,240,4.2,1.6\n"
+                + "MG-02,Paper sleeve filters,188,1.4,0.3\n"
+                + "MG-05,Fennel salt tins,128,3.1,2.8\n";
+        HttpResponse<String> response = send("POST", "/v1/import/skus",
+                "{\"fixture\":\"forward-pick\",\"csv\":" + mapper.writeValueAsString(csv) + "}");
+        assertEquals(200, response.statusCode());
+        JsonNode body = mapper.readTree(response.body());
+        assertEquals("face", body.get("kind").asText());
+        assertEquals(3, body.get("report").get("rowsAccepted").asInt());
+        assertEquals(3, body.get("face").get("skus").size());
+        assertEquals("MG-01", body.get("face").get("skus").get(0).get("id").asText());
+        assertTrue(body.get("report").get("pruned").get("affinities").asInt() > 0);
+    }
+
+    @Test
+    void aSkuMasterImportsIntoThePutawayDayAndPrunesDanglingReferences() throws Exception {
+        String csv = "id,name,picksPerDay,cubeLiters,weightKg,case\n"
+                + "MG-01,Blue tin coffee,240,4.2,1.6,6\n"
+                + "MG-05,Fennel salt tins,128,3.1,2.8,4\n";
+        HttpResponse<String> response = send("POST", "/v1/import/skus",
+                "{\"fixture\":\"putaway-day\",\"csv\":" + mapper.writeValueAsString(csv) + "}");
+        assertEquals(200, response.statusCode());
+        JsonNode body = mapper.readTree(response.body());
+        assertEquals("day", body.get("kind").asText());
+        assertEquals(2, body.get("report").get("rowsAccepted").asInt());
+        assertTrue(body.get("report").get("pruned").get("receipts").asInt() > 0);
+        assertEquals(2, body.get("day").get("receipts").size());
+        assertEquals(6, body.get("day").get("uoms").get("MG-01").get("case").asInt());
+    }
+
+    @Test
+    void badCsvRowsRideInTheReportNotAsARefusal() throws Exception {
+        String csv = "id,name,picksPerDay,cubeLiters,weightKg\n"
+                + "MG-01,Blue tin coffee,240,4.2,1.6\n"
+                + "MG-02,,188,1.4,0.3\n";
+        HttpResponse<String> response = send("POST", "/v1/import/skus",
+                "{\"fixture\":\"forward-pick\",\"csv\":" + mapper.writeValueAsString(csv) + "}");
+        assertEquals(200, response.statusCode());
+        JsonNode report = mapper.readTree(response.body()).get("report");
+        assertEquals(1, report.get("rowsAccepted").asInt());
+        assertEquals(1, report.get("rowsRejected").asInt());
+        assertEquals(3, report.get("rejections").get(0).get("line").asInt());
+    }
+
+    @Test
+    void anSkuNoSlotCanHoldIsRefusedWithTheEngineWords() throws Exception {
+        String csv = "id,name,picksPerDay,cubeLiters,weightKg\n"
+                + "MG-01,Blue tin coffee,240,99999,1.6\n";
+        HttpResponse<String> response = send("POST", "/v1/import/skus",
+                "{\"fixture\":\"forward-pick\",\"csv\":" + mapper.writeValueAsString(csv) + "}");
+        assertEquals(400, response.statusCode());
+        assertTrue(mapper.readTree(response.body()).get("reasons").toString().contains("cube"));
+    }
+
+    @Test
+    void theCaseColumnIsRefusedOnAFaceImport() throws Exception {
+        String csv = "id,name,picksPerDay,cubeLiters,weightKg,case\n"
+                + "MG-01,Blue tin coffee,240,4.2,1.6,4\n";
+        HttpResponse<String> response = send("POST", "/v1/import/skus",
+                "{\"fixture\":\"forward-pick\",\"csv\":" + mapper.writeValueAsString(csv) + "}");
+        assertEquals(400, response.statusCode());
+        assertTrue(mapper.readTree(response.body()).get("reasons").toString().contains("case column"));
+    }
+
+    @Test
     void fixturesEndpointListsThePublishedFacesAndDays() throws Exception {
         HttpResponse<String> response = send("GET", "/v1/fixtures", null);
         assertEquals(200, response.statusCode());
