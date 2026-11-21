@@ -51,6 +51,8 @@ A change on either side that moves a number fails the build.
 
 ```bash
 mvn -B -f engine verify        # the engine's own tests
+java -jar engine/api/target/quay-api.jar
+# open http://127.0.0.1:8091/ — the engine's workbench: pick a fixture or paste a document, run it, read the plan
 ```
 
 ## What is fictional

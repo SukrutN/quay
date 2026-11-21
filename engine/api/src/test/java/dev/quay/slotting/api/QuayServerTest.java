@@ -126,6 +126,25 @@ class QuayServerTest {
         assertFalse(problem.has("outcomes"));
     }
 
+    @Test
+    void workbenchIsServedAtTheRoot() throws Exception {
+        HttpResponse<String> page = send("GET", "/", null);
+        assertEquals(200, page.statusCode());
+        assertTrue(page.headers().firstValue("content-type").orElse("").contains("text/html"));
+        assertTrue(page.body().contains("engine workbench"));
+        assertTrue(page.body().contains("/v1/slotting"));
+    }
+
+    @Test
+    void fixturesEndpointListsThePublishedFacesAndDays() throws Exception {
+        HttpResponse<String> response = send("GET", "/v1/fixtures", null);
+        assertEquals(200, response.statusCode());
+        JsonNode body = mapper.readTree(response.body());
+        assertTrue(contains(body.get("faces"), "lane"));
+        assertTrue(contains(body.get("faces"), "forward-pick"));
+        assertTrue(contains(body.get("days"), "putaway-day"));
+    }
+
     private static JsonNode row(JsonNode assignment, String skuId) {
         for (JsonNode row : assignment) {
             if (skuId.equals(row.get("skuId").asText())) {
@@ -133,6 +152,15 @@ class QuayServerTest {
             }
         }
         throw new AssertionError(skuId);
+    }
+
+    private static boolean contains(JsonNode array, String value) {
+        for (JsonNode item : array) {
+            if (value.equals(item.asText())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private HttpResponse<String> send(String method, String path, String body) throws Exception {

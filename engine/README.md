@@ -46,6 +46,17 @@ curl -s http://127.0.0.1:8091/v1/slotting -H 'content-type: application/json' -d
 
 An unknown fixture name is HTTP 400 with `application/problem+json`. The body is a problem document, not a made-up layout. Send an inline face under `face` when you do not want a published fixture. The OpenAPI document is at `/v1/openapi.yaml`.
 
+## Open the workbench
+
+The API jar serves a workbench page at its root — a browser tab for the engine, in the site's own clothes:
+
+```bash
+java -jar engine/api/target/quay-api.jar
+# then open http://127.0.0.1:8091/
+```
+
+Pick a published fixture or paste your own face or day document, run it, and read the same numbers the CLI prints: the scorecards, the placement table, the policy comparison, the replenish trace. A refused document shows its problem document on the page, reasons and all. The page rides inside the jar — one binary, one tab, no build step, no dependencies.
+
 ## Where to read next
 
 - [docs/architecture.md](docs/architecture.md) — why the domain is separate, and why there is no database

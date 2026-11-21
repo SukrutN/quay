@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -71,5 +72,10 @@ public final class PutawayLibrary {
             throw new UnknownDay(id);
         }
         return day;
+    }
+
+    /** The published day ids, sorted, so a client can offer them without guessing. */
+    public List<String> names() {
+        return days.keySet().stream().sorted().toList();
     }
 }

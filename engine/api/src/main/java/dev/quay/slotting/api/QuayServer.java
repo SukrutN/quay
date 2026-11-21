@@ -88,6 +88,10 @@ public final class QuayServer {
         });
         app.get("/health", ctx -> ctx.json(Map.of("status", "up")));
         app.get("/v1/openapi.yaml", ctx -> ctx.contentType("application/yaml").result(openApi));
+        app.get("/v1/fixtures", ctx -> ctx.json(Map.of(
+                "faces", library.names(),
+                "days", putawayLibrary.names())));
+        app.get("/", ctx -> ctx.contentType("text/html").result(loadWorkbench()));
         app.post("/v1/slotting", ctx -> ctx.json(slotFace.place(readRequest(ctx, library))));
         app.post("/v1/putaway", ctx -> ctx.json(runPutaway.day(readPutawayRequest(ctx, library, putawayLibrary))));
         return app;
@@ -188,6 +192,18 @@ public final class QuayServer {
             return new String(input.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException exception) {
             throw new IllegalStateException("openapi.yaml could not be read", exception);
+        }
+    }
+
+    /** The workbench rides inside the jar, like the OpenAPI document: one binary, one browser tab. */
+    private static String loadWorkbench() {
+        try (InputStream input = QuayServer.class.getResourceAsStream("/web/index.html")) {
+            if (input == null) {
+                throw new IllegalStateException("web/index.html is missing");
+            }
+            return new String(input.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException exception) {
+            throw new IllegalStateException("web/index.html could not be read", exception);
         }
     }
 }
