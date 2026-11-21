@@ -40,13 +40,19 @@
     }
     .eyebrow .key { color: var(--signal); }
 
-    header { border-bottom: 1px solid var(--line); }
-    header .bar {
-      display: flex; align-items: baseline; justify-content: space-between;
-      padding: 18px 0; gap: 16px;
+    header {
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(17, 18, 13, 0.85);
+      backdrop-filter: blur(10px);
     }
-    .wordmark { font-size: 24px; letter-spacing: -0.04em; font-weight: 500; }
-    .wordmark span { color: var(--signal); }
+    header .bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; color: var(--paper); }
+    .brand .mark { width: 28px; height: 28px; }
+    .brand-name { font-size: 18px; letter-spacing: -0.04em; font-weight: 500; }
     .health { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--silver); }
     .health .dot {
       display: inline-block; width: 8px; height: 8px; border-radius: 50%;
@@ -164,7 +170,14 @@
 <body>
   <header>
     <div class="wrap bar">
-      <p class="wordmark">Quay<span>.</span></p>
+      <div class="brand" aria-label="Quay">
+        <svg viewBox="0 0 32 32" class="mark" aria-hidden="true">
+          <rect x="4" y="5" width="5" height="22" fill="currentColor" />
+          <rect x="13.5" y="10" width="5" height="17" fill="#51e076" />
+          <rect x="23" y="15" width="5" height="12" fill="currentColor" />
+        </svg>
+        <span class="brand-name">Quay</span>
+      </div>
       <p class="health" id="health"><span class="dot"></span>Engine workbench</p>
     </div>
   </header>
@@ -211,7 +224,7 @@
       </div>
       <div class="bars" id="face-bars"></div>
       <div id="face-assignment"></div>
-      <details>
+      <details id="face-arrived">
         <summary>The layout that arrived with the document</summary>
         <div id="face-current-assignment"></div>
       </details>
@@ -268,7 +281,7 @@
       select.add(new Option(placeholder, ""));
       for (const name of names) select.add(new Option(name, "fixture:" + name));
       select.add(new Option("Paste your own document", "paste"));
-      select.value = "";
+      select.value = names.length > 0 ? "fixture:" + names[0] : "";
       $("paste-wrap").style.display = "none";
     }
 
@@ -294,6 +307,9 @@
       state.mode = mode;
       $("tab-face").setAttribute("aria-selected", String(mode === "face"));
       $("tab-day").setAttribute("aria-selected", String(mode === "day"));
+      hide($("fault"));
+      hide($("face-result"));
+      hide($("day-result"));
       renderSource();
     }
     $("tab-face").addEventListener("click", () => setMode("face"));
@@ -301,7 +317,23 @@
 
     // --- Run: build the request body and POST it. ---
 
-    $("run").addEventListener("click", async () => {
+    $("run").addEventListener("click", () => run());
+
+    // Show progress on the button and always restore it, whatever the outcome.
+    async function run() {
+      const button = $("run");
+      const label = button.textContent;
+      button.disabled = true;
+      button.textContent = "Running";
+      try {
+        await runOnce();
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    }
+
+    async function runOnce() {
       hide($("fault"));
       hide($("face-result"));
       hide($("day-result"));
@@ -345,9 +377,7 @@
       }
       if (state.mode === "face") renderFace(payload);
       else renderDay(payload);
-    });
-
-    // --- Rendering: the face reading. ---
+    }
 
     const m1 = (n) => Number(n).toFixed(1);
     const pct = (n) => (100 * n).toFixed(0) + "%";
@@ -356,24 +386,48 @@
       $("face-name").textContent = r.faceName + " (" + r.faceId + ")";
       $("face-mode").textContent = "mode " + r.mode;
       $("face-ms").textContent = r.elapsedMillis + " ms";
-      const cut = Math.round(100 * r.comparison.travelReduction);
-      $("face-headline").innerHTML =
-        cut > 0
-          ? "The proposal walks <span class='up'>" + cut + "% less</span> than the layout that arrived with the document."
-          : "The proposal does not improve on the layout that arrived with the document.";
+
+      // A document may arrive without a layout to compare against.
+      const hasIncumbent = r.comparison !== null && r.current !== null;
+      if (hasIncumbent) {
+        const cut = Math.round(100 * r.comparison.travelReduction);
+        $("face-headline").innerHTML =
+          cut > 0
+            ? "The proposal walks <span class='up'>" + cut + "% less</span> than the layout that arrived with the document."
+            : "The proposal does not improve on the layout that arrived with the document.";
+      } else {
+        $("face-headline").innerHTML =
+          "The proposal places " + r.proposal.metrics.placed + " cartons with a return walk of " +
+          Math.round(r.proposal.metrics.travelPickMeters).toLocaleString("en-US") + " pick-m a day.";
+      }
 
       scorecard($("face-proposal"), "Proposal", r.proposal, r.proposal.cost.total);
-      scorecard($("face-current"), "Current", r.current, r.current.cost.total);
+      if (hasIncumbent) {
+        scorecard($("face-current"), "Current", r.current, r.current.cost.total);
+      } else {
+        $("face-current").innerHTML =
+          "<p class='tag'>Current</p>" +
+          "<div class='row'><span class='k'>This document arrived without a layout to compare against.</span></div>";
+      }
 
       const bars = $("face-bars");
-      const max = Math.max(r.comparison.travelPickMetersBefore, r.comparison.travelPickMetersAfter);
-      bars.innerHTML =
-        barRow("Proposed", r.comparison.travelPickMetersAfter, max, false) +
-        barRow("Current", r.comparison.travelPickMetersBefore, max, true);
+      if (hasIncumbent) {
+        const max = Math.max(r.comparison.travelPickMetersBefore, r.comparison.travelPickMetersAfter);
+        bars.innerHTML =
+          barRow("Proposed", r.comparison.travelPickMetersAfter, max, false) +
+          barRow("Current", r.comparison.travelPickMetersBefore, max, true);
+        bars.style.display = "";
+      } else {
+        bars.innerHTML = "";
+        bars.style.display = "none";
+      }
 
       assignmentTable($("face-assignment"), r.proposal.assignment, "Proposal");
-      assignmentTable($("face-current-assignment"), r.current.assignment, "Current layout");
-      show($("face-result"));
+      $("face-arrived").style.display = hasIncumbent ? "" : "none";
+      if (hasIncumbent) {
+        assignmentTable($("face-current-assignment"), r.current.assignment, "Current layout");
+      }
+      reveal($("face-result"));
     }
 
     function scorecard(node, tag, side, objective) {
@@ -480,7 +534,7 @@
         })
       );
       directivesTable($("day-directives"), r.outcomes);
-      show($("day-result"));
+      reveal($("day-result"));
     }
 
     function directivesTable(node, outcomes) {
@@ -517,9 +571,13 @@
       $("fault-title").textContent = title || "The engine rejected the document";
       $("fault-detail").textContent = detail || "";
       $("fault-reasons").innerHTML = (reasons || []).map((r) => "<li>" + r + "</li>").join("");
-      show($("fault"));
+      reveal($("fault"));
     }
 
+    function reveal(node) {
+      node.style.display = "block";
+      node.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     function show(node) { node.style.display = "block"; }
     function hide(node) { node.style.display = "none"; }
   </script>
