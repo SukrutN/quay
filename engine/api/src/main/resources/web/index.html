@@ -78,6 +78,13 @@
     }
     select:focus, textarea:focus { outline: none; border-color: var(--signal); }
     textarea { min-height: 170px; resize: vertical; line-height: 1.45; }
+    input[type="file"] { font-family: var(--mono); font-size: 12px; color: var(--silver); }
+    input[type="file"]::file-selector-button {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      background: none; border: 1px solid var(--line-strong); border-radius: 2px; color: var(--silver);
+      padding: 6px 12px; margin-right: 12px; cursor: pointer;
+    }
+    input[type="file"]::file-selector-button:hover { color: var(--paper); border-color: var(--paper); }
     .btn {
       background: var(--signal); color: var(--deep); border: none; border-radius: 2px;
       font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -109,11 +116,11 @@
     .row .v.good { color: var(--signal); }
 
     .bars { margin-top: 16px; max-width: 720px; }
-    .bar-row { margin-top: 10px; }
-    .bar-row .lbl { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--silver); }
-    .bar { height: 10px; background: rgba(247, 247, 247, 0.06); border-radius: 2px; margin-top: 4px; }
-    .bar span { display: block; height: 10px; border-radius: 2px; background: var(--signal); }
-    .bar.muted span { background: rgba(247, 247, 247, 0.55); }
+    .meter-row { margin-top: 10px; }
+    .meter-row .lbl { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--silver); }
+    .meter { height: 10px; background: rgba(247, 247, 247, 0.06); border-radius: 2px; margin-top: 4px; }
+    .meter span { display: block; height: 10px; border-radius: 2px; background: var(--signal); }
+    .meter.muted span { background: rgba(247, 247, 247, 0.55); }
 
     table { width: 100%; border-collapse: collapse; margin-top: 24px; }
     th {
@@ -387,8 +394,8 @@
     function barRow(label, value, max, muted) {
       const width = max > 0 ? (100 * value) / max : 0;
       return (
-        "<div class='bar-row'><div class='lbl'><span>" + label + "</span><span>" + m1(value) +
-        " m</span></div><div class='bar" + (muted ? " muted" : "") + "'><span style='width:" +
+        "<div class='meter-row'><div class='lbl'><span>" + label + "</span><span>" + m1(value) +
+        " m</span></div><div class='meter" + (muted ? " muted" : "") + "'><span style='width:" +
         width.toFixed(1) + "%'></span></div></div>"
       );
     }
