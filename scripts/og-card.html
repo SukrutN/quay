@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Quay social card</title>
+  <!--
+    The deterministic social card source. Captured at exactly 1200 x 630 with a
+    headless browser and committed as src/app/opengraph-image.png; this file is
+    the record of how the asset was made, from the project's own tokens.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&family=Inter:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; }
+    body {
+      width: 1200px; height: 630px; position: relative; overflow: hidden;
+      background: #0d0d0d; color: #f1f1f1;
+      font-family: "Space Grotesk", "Inter", sans-serif;
+    }
+    .eyebrow {
+      position: absolute; top: 64px; left: 72px;
+      font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+      font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: #a3a3a3;
+    }
+    h1 { position: absolute; top: 148px; left: 64px; margin: 0; font-size: 128px; line-height: 0.95; font-weight: 500; letter-spacing: -0.05em; }
+    h1 .walk { color: #fbaa19; }
+    .sub { position: absolute; top: 396px; left: 72px; max-width: 600px; font-family: "Inter", sans-serif; font-size: 26px; line-height: 1.45; color: #a3a3a3; }
+    .sub b { color: #f1f1f1; font-weight: 400; }
+    .rack { position: absolute; top: 150px; right: 72px; display: grid; grid-template-columns: repeat(5, 42px); gap: 8px; }
+    .bay { width: 42px; height: 16px; background: rgba(241, 241, 241, 0.15); }
+    .bay.hot { background: #fbaa19; }
+    .dockline { position: absolute; right: 72px; width: 258px; height: 2px; background: #fbaa19; }
+    .foot {
+      position: absolute; left: 72px; right: 72px; bottom: 56px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(241, 241, 241, 0.16); padding-top: 26px;
+      font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+      font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: #a3a3a3;
+    }
+    .foot .brand { display: flex; align-items: center; gap: 14px; color: #f1f1f1; }
+  </style>
+</head>
+<body>
+  <p class="eyebrow">Quay · A slotting notebook</p>
+  <h1>Shorten<br /><span class="walk">the walk</span></h1>
+  <p class="sub">Every carton seated: <b>fast goods near the dock</b>, heavy goods kept low, and cartons that leave together, seated together.</p>
+  <div class="rack" aria-hidden="true">
+    <span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+    <span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+    <span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+    <span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+    <span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+    <span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+    <span class="bay hot"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+    <span class="bay hot"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span><span class="bay"></span>
+  </div>
+  <div class="dockline" style="top: 326px;" aria-hidden="true"></div>
+  <div class="foot">
+    <span class="brand">
+      <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+        <rect x="4" y="5" width="5" height="22" fill="#f1f1f1" />
+        <rect x="13.5" y="10" width="5" height="17" fill="#fbaa19" />
+        <rect x="23" y="15" width="5" height="12" fill="#f1f1f1" />
+      </svg>
+      Quay
+    </span>
+    <span>sukrutn.github.io/quay</span>
+  </div>
+</body>
+</html>
