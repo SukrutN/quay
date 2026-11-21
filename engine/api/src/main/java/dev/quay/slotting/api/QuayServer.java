@@ -40,7 +40,10 @@ public final class QuayServer {
 
     public static void main(String[] args) {
         int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8091"));
-        create(FixtureLibrary.fromClasspath()).start("0.0.0.0", port);
+        create(
+                FixtureLibrary.fromClasspath(),
+                PutawayLibrary.fromClasspath(),
+                OpsShell.Options.fromEnv("QUAY")).start("0.0.0.0", port);
     }
 
     public static Javalin create(FixtureLibrary library) {
@@ -48,20 +51,30 @@ public final class QuayServer {
     }
 
     public static Javalin create(FixtureLibrary library, PutawayLibrary putawayLibrary) {
+        return create(library, putawayLibrary, OpsShell.Options.defaults());
+    }
+
+    public static Javalin create(FixtureLibrary library, PutawayLibrary putawayLibrary, OpsShell.Options options) {
         String openApi = loadOpenApi();
         SlotFace slotFace = new SlotFace();
         RunPutaway runPutaway = new RunPutaway();
-        Javalin app = Javalin.create(config -> config.showJavalinBanner = false);
-        app.before(ctx -> ctx.attribute("startedNanos", System.nanoTime()));
-        app.after(ctx -> {
-            Long started = ctx.attribute("startedNanos");
-            long elapsedMs = started == null ? 0 : (System.nanoTime() - started) / 1_000_000L;
-            log.info(
-                    Markers.append("method", ctx.method().name())
-                            .and(Markers.append("path", ctx.path()))
-                            .and(Markers.append("status", ctx.statusCode()))
-                            .and(Markers.append("elapsedMs", elapsedMs)),
-                    "request");
+        OpsShell shell = new OpsShell(options, "quay");
+        Javalin app = Javalin.create(config -> {
+            config.showJavalinBanner = false;
+            // the same cap the gate announces, enforced by the server itself
+            // for bodies that lie about their length
+            config.http.maxRequestSize = options.maxBodyBytes();
+        });
+        app.before(ctx -> {
+            ctx.attribute("startedNanos", System.nanoTime());
+            shell.gate(ctx);
+        });
+        app.after(shell::observed);
+        app.exception(OpsShell.Refusal.class, (exception, ctx) -> {
+            if (exception.retryAfterSeconds > 0) {
+                ctx.header("Retry-After", String.valueOf(exception.retryAfterSeconds));
+            }
+            problem(ctx, exception.status, exception.type, exception.title, exception.detail, List.of());
         });
         app.exception(FaceRejection.class, (exception, ctx) -> problem(
                 ctx, 400, "urn:quay:slotting:invalid-face", "Invalid face", exception.getMessage(), exception.reasons()));
@@ -87,13 +100,31 @@ public final class QuayServer {
             problem(ctx, 500, "urn:quay:slotting:internal", "Internal error", "The face could not be slotted.", List.of());
         });
         app.get("/health", ctx -> ctx.json(Map.of("status", "up")));
+        app.get("/ready", ctx -> {
+            boolean ready = !library.names().isEmpty() && !putawayLibrary.names().isEmpty();
+            ctx.status(ready ? 200 : 503).json(Map.of(
+                    "status", ready ? "ready" : "not-ready",
+                    "faces", library.names().size(),
+                    "days", putawayLibrary.names().size()));
+        });
+        app.get("/metrics", ctx -> ctx
+                .contentType("text/plain; version=0.0.4; charset=utf-8")
+                .result(shell.render()));
         app.get("/v1/openapi.yaml", ctx -> ctx.contentType("application/yaml").result(openApi));
         app.get("/v1/fixtures", ctx -> ctx.json(Map.of(
                 "faces", library.names(),
                 "days", putawayLibrary.names())));
         app.get("/", ctx -> ctx.contentType("text/html").result(loadWorkbench()));
-        app.post("/v1/slotting", ctx -> ctx.json(slotFace.place(readRequest(ctx, library))));
-        app.post("/v1/putaway", ctx -> ctx.json(runPutaway.day(readPutawayRequest(ctx, library, putawayLibrary))));
+        app.post("/v1/slotting", ctx -> {
+            var report = slotFace.place(readRequest(ctx, library));
+            shell.slottingRun();
+            ctx.json(report);
+        });
+        app.post("/v1/putaway", ctx -> {
+            var report = runPutaway.day(readPutawayRequest(ctx, library, putawayLibrary));
+            shell.putawayRun();
+            ctx.json(report);
+        });
         return app;
     }
 

@@ -21,6 +21,37 @@ paths:
                   status:
                     type: string
                     example: up
+  /ready:
+    get:
+      operationId: readiness
+      responses:
+        "200":
+          description: The fixture libraries are loaded and the engine will answer.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, faces, days]
+                properties:
+                  status:
+                    type: string
+                    example: ready
+                  faces:
+                    type: integer
+                  days:
+                    type: integer
+        "503":
+          description: A fixture library is empty, so the engine is not ready to serve.
+  /metrics:
+    get:
+      operationId: metrics
+      responses:
+        "200":
+          description: The process's counters and gauges, in Prometheus text exposition format. The route stays open for the scraper.
+          content:
+            text/plain:
+              schema:
+                type: string
   /v1/openapi.yaml:
     get:
       operationId: openApi
