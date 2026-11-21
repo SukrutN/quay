@@ -1,8 +1,8 @@
 /**
  * The putaway engine, ported from quay-engine's putaway module. Three policies
  * direct one day's receipts: velocity, affinity, and the seeded random fork the
- * two are measured against. The random fork replays java.util.Random exactly —
- * a 48-bit LCG plus the shuffle Collections.shuffle specifies — so the site
+ * two are measured against. The random fork replays java.util.Random exactly
+ * (a 48-bit LCG plus the shuffle Collections.shuffle specifies) so the site
  * carries the engine's numbers into its plots.
  */
 import {

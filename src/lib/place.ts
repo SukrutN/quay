@@ -207,7 +207,7 @@ function writeNote(
   if (closest && closest.steps <= 2) {
     const relation =
       closest.steps === 0 ? "shares this bay" : closest.steps === 1 ? "is one step away" : "is two steps away"
-    note += ` ${closest.name} ${relation} — they show up on the same orders often enough to sit together.`
+    note += ` ${closest.name} ${relation}: the two appear on the same orders often enough to justify sitting together.`
   }
   return note
 }

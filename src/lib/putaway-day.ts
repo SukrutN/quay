@@ -1,5 +1,5 @@
 /**
- * Harbor & Lane day 07 — the putaway day, read from the engine's published
+ * Harbor & Lane day 07: the putaway day, read from the engine's published
  * fixture (engine/fixtures/putaway-day.json) instead of a hand-carried copy.
  * The engine's field names (picksPerDay, skuA/skuB, the rack block) become
  * the site's; the numbers have one home. Not a real warehouse.

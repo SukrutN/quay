@@ -97,11 +97,13 @@ export default function HomePage() {
           <div className="grid gap-14 lg:grid-cols-[1.3fr_0.7fr] lg:gap-20">
             <div>
               <p className="max-w-3xl text-[clamp(1.7rem,3.4vw,2.8rem)] leading-[1.15] tracking-[-0.04em]">
-                A picker should spend the hour on the order, not on the aisle. Quay reads a small forward face and proposes where each carton should stand.
+                A picker should spend the hour filling orders instead of walking aisles. Quay analyzes a small forward
+                pick face and proposes where each carton should stand.
               </p>
               <p className="mt-8 max-w-xl text-silver">
                 The starting layout is deliberately clumsy: fast tins sit far from the dock, and heavy sacks are up on
-                the beam. The proposal is a heuristic you can inspect, not a claim that the floor is solved.
+                the beam. The proposal is a heuristic whose scoring you can inspect. It does not claim the floor is
+                solved.
               </p>
             </div>
             <div>

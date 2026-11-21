@@ -418,8 +418,8 @@ export default function PutawayPage() {
             What the day refuses.
           </h2>
           <p className="mt-4 max-w-2xl text-silver">
-            Zero refusals today — the rack had room. The checks still ran on every line, and they are why the ending
-            state adds up:
+            Zero refusals today because the rack had room for every line. The checks still ran on each line, and they
+            are the reason the ending state adds up:
           </p>
           <ul className="mt-8 max-w-3xl space-y-3 text-silver">
             <li>

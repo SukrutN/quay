@@ -41,7 +41,7 @@ export const LEVELS = RACK_SPEC.levels as Level[]
 /**
  * The geometry and the heavy/light lines are the engine document's. The
  * anchor share and the slow-companion cutoff are the studio's own walkthrough
- * knobs — the engine's slotting policy carries its own, different, weights.
+ * knobs; the engine's slotting policy carries its own, different, weights.
  */
 export const RULES = {
   heavyKg: faceJson.policy.heavyKg,
@@ -124,7 +124,7 @@ const SHORT_NAMES: Record<string, string> = {
   "MG-30": "Corks",
 }
 
-/** Fictional dry goods for Marrow Goods, House 4 — the engine's catalog, not a real one. */
+/** Fictional dry goods for Marrow Goods, House 4, read from the engine's catalog. */
 export const SKUS: Sku[] = faceJson.skus.map((sku) => ({
   id: sku.id,
   name: sku.name,
